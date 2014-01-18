@@ -95,9 +95,7 @@ void CarPhysics::Update(float seconds)
 	m_dragForce = m_velocity * m_speed * -DragConstant;
 	m_resistanceForce = m_velocity * -ResistanceConstant;
 
-	float cosSlipAngle = MathUtils::Clamp(sm::Vec3::Dot(m_bodyDirection, m_velocity.GetNormalized()), 0.0f, 1.0f);
-	debugLog.push_back(std::string("cosSlipAngle = ") + StringUtils::ToString(cosSlipAngle));
-
+	float cosSlipAngle = MathUtils::Clamp(sm::Vec3::Dot(m_bodyDirection, m_velocity.GetNormalized()), -1.0f, 1.0f);
 	debugLog.push_back(std::string("cosSlipAngle = ") + StringUtils::ToString(cosSlipAngle));
 		
 	if (m_speed > 0.0f)
@@ -128,14 +126,20 @@ void CarPhysics::Update(float seconds)
 		m_Ff -= m_Ff.GetNormalized().GetReversed() * MathUtils::Min(ffScalar, 10000.0f);*/
 
 	//float fastestFixAngle = 1.5f * m_speed;
-	float fastestFixAngle = 1.5f;
+
+	float fastestFixAngle = 0.0f;
+	if (m_speed <= 10.0f)
+		fastestFixAngle = 100.0f;
+	else
+		fastestFixAngle = 1.5f;
 
 	//if (cosSlipAngle < 0.999f)
 	{
 		float angle = acosf(cosSlipAngle);
 		debugLog.push_back(std::string("angle = ") + StringUtils::ToString(angle));
+		debugLog.push_back(std::string("cosSlipAngle = ") + StringUtils::ToString(cosSlipAngle));
 
-		float angleToFix = fastestFixAngle * cosSlipAngle * seconds;
+		float angleToFix = fastestFixAngle * MathUtils::Abs(cosSlipAngle) * seconds;
 
 		sm::Vec3 axis = (m_bodyDirection * m_velocity).GetNormalized();
 		m_velocity.RotateY(-MathUtils::Min(angle, angleToFix) * MathUtils::Sign(axis.y));

@@ -352,7 +352,8 @@ void GameScreen::Update(float time, float seconds)
 
 	char text[1024];
 	sprintf(text, "Speed = %.2f km/h", m_carPhysics->m_speed * (3600.0f / 1000.0f));
-
+	debugLog.push_back(text);
+	sprintf(text, "Speed = %.2f m/s", m_carPhysics->m_speed);
 	debugLog.push_back(text);
 }
 
