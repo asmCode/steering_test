@@ -61,6 +61,9 @@ protected:
 	sm::Vec3 m_Fm; // move force
 	sm::Vec3 m_Fe; // engine force
 
+	float m_velocityLong;
+	float m_velocityLat;
+
 	sm::Vec3 m_velocity;
 	sm::Vec3 m_acceleration;
 	float m_speed;

@@ -29,7 +29,9 @@ CarPhysics::CarPhysics() :
 	m_speed(0.0f),
 	m_position(0, 0, 0),
 	m_steerAngle(0.0f),
-	m_bodyDirection(0, 0, -1.0f)
+	m_bodyDirection(0, 0, -1.0f),
+	m_velocityLong(0.0f),
+	m_velocityLat(0.0f)
 {
 	m_Ff.Set(0, 0, 0);
 	m_Fm.Set(0, 0, 0);
@@ -60,41 +62,42 @@ void CarPhysics::SetParameters(
 
 void CarPhysics::Update(float seconds)
 {
-	//sm::Vec3 corneringForce = CalculateCorneringForce();
-
-	/*
-	m_speed = m_velocity.GetLength();
-
-	m_tractionForce = m_direction * m_engineForce * m_accPedal;
-	m_dragForce = m_velocity * m_speed * -DragConstant;
-	m_resistanceForce = m_velocity * -ResistanceConstant;
-
-	m_longFrontForce = m_tractionForce + m_dragForce + m_resistanceForce;
-
-	sm::Vec3 frontPos = m_position + m_bodyDirection * m_frontAxisDistance;
-	sm::Vec3 rearPos = m_position - m_bodyDirection * m_frontAxisDistance;
-
-	sm::Vec3 frontWheelsDir = GetFrontWheelsWorldDirection();
-	sm::Vec3 rearWheelsDir = m_bodyDirection;
-
-	frontPos += frontWheelsDir * m_speed * seconds;
-	rearPos += rearWheelsDir * m_speed * seconds;
-
-	m_position = (frontPos + rearPos) * 0.5f;
-	m_bodyDirection = (frontPos - rearPos).GetNormalized();
-
-	m_acceleration = m_longForce * (1.0f / m_totalMass);
-	m_velocity += m_acceleration * seconds;
-	*/
-	/*m_position += m_velocity * seconds;*/
+	//seconds = 0.1f;
 
 	MathUtils::FixToZero(m_velocity);
 
+	sm::Vec3 sideBodyDirection(m_bodyDirection.z, 0, -m_bodyDirection.x);
+
+	m_velocityLong = sm::Vec3::Dot(m_bodyDirection, m_velocity);
+	m_velocityLat = sm::Vec3::Dot(sideBodyDirection, m_velocity);
+
+	debugLog.push_back(std::string("m_velocityLong = ") + StringUtils::ToString(m_velocityLong));
+	debugLog.push_back(std::string("m_velocityLat = ") + StringUtils::ToString(m_velocityLat));
+
+	/*if (MathUtils::Abs(m_velocityLat) < 20.0f * seconds)
+		m_velocityLat = 0.0f;*/
+
+	float sideSpeed = 20.0f;
+
+	/*if (m_speed < 30.0)
+		sideSpeed = 10.0f;
+	if (m_speed < 20.0)
+		sideSpeed = 25.0f;
+	if (m_speed < 10.0)
+		sideSpeed = 50.0f;*/
+
+	m_velocityLat -= MathUtils::Min(MathUtils::Abs(m_velocityLat), sideSpeed * seconds) * MathUtils::Sign(m_velocityLat);
+
+	m_velocity = m_bodyDirection * m_velocityLong + sideBodyDirection * m_velocityLat;
+
+///	if (m_velo)
+
 	m_speed = m_velocity.GetLength();
 
 	m_dragForce = m_velocity * m_speed * -DragConstant;
 	m_resistanceForce = m_velocity * -ResistanceConstant;
 
+#if 0
 	float cosSlipAngle = MathUtils::Clamp(sm::Vec3::Dot(m_bodyDirection, m_velocity.GetNormalized()), -1.0f, 1.0f);
 	debugLog.push_back(std::string("cosSlipAngle = ") + StringUtils::ToString(cosSlipAngle));
 		
@@ -111,6 +114,8 @@ void CarPhysics::Update(float seconds)
 			m_velocity.Set(0, 0, 0);
 	}
 
+#endif
+
 	m_bodyDirection.Set(0, 0, -1);
 	m_bodyDirection.RotateY(-m_steerAngle);
 
@@ -118,20 +123,8 @@ void CarPhysics::Update(float seconds)
 
 	m_Ff = m_Fe + m_dragForce + m_resistanceForce;
 
-	/*float ffScalar = m_Ff.GetLength();
-
-	debugLog.push_back(std::string("ffScalar = ") + StringUtils::ToString(ffScalar));
-
-	if (ffScalar > 0.0f)
-		m_Ff -= m_Ff.GetNormalized().GetReversed() * MathUtils::Min(ffScalar, 10000.0f);*/
-
-	//float fastestFixAngle = 1.5f * m_speed;
-
-	float fastestFixAngle = 0.0f;
-	if (m_speed <= 10.0f)
-		fastestFixAngle = 100.0f;
-	else
-		fastestFixAngle = 1.5f;
+#if 0
+	float fastestFixAngle = 1.5f;
 
 	//if (cosSlipAngle < 0.999f)
 	{
@@ -145,9 +138,21 @@ void CarPhysics::Update(float seconds)
 		m_velocity.RotateY(-MathUtils::Min(angle, angleToFix) * MathUtils::Sign(axis.y));
 	}
 
+#endif
+
 	m_acceleration = m_Ff * (1.0f / m_totalMass);
 	m_velocity += m_acceleration * seconds;
 	m_position += m_velocity * seconds;
+
+	if (m_position.x < -20)
+		m_position.x = 20;
+	if (m_position.x > 20)
+		m_position.x = -20;
+
+	if (m_position.z < -20)
+		m_position.z = 20;
+	if (m_position.z > 20)
+		m_position.z = -20;
 }
 
 void CarPhysics::Draw()
