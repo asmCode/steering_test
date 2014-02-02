@@ -135,7 +135,7 @@ bool GameScreen::Initialize()
 	m_rect1Angle = 0.0f;
 
 	m_carPhysics = new CarPhysics();
-	m_carPhysics->SetEngineForce(1.0f * 1000.0f);
+	m_carPhysics->SetEngineForce(8.0f * 1000.0f);
 	m_carPhysics->SetTotalMass(1000.0f);
 	m_carPhysics->SetParameters(1.2f, 1.2f);
 
@@ -197,7 +197,8 @@ void GameScreen::Draw(float time, float seconds)
 	m_spriteShader->UseProgram();
 
 	sm::Matrix viewMatrix =
-		sm::Matrix::TranslateMatrix(-carPosition.x, carPosition.z, -10) *
+		//sm::Matrix::TranslateMatrix(-carPosition.x, carPosition.z, -10) *
+		sm::Matrix::TranslateMatrix(0, 0, -10) *
 		sm::Matrix::RotateAxisMatrix(MathUtils::PI2, 1, 0, 0);
 
 #if 0
@@ -306,10 +307,13 @@ void GameScreen::Draw(float time, float seconds)
 	VectorGraphics::Begin();
 
 	//VectorGraphics::DrawSegment(m_carPhysics->m_position, m_carPhysics->m_position + m_carPhysics->m_Fe, sm::Vec3(1, 0, 0));
-	VectorGraphics::DrawSegment(m_carPhysics->m_position, m_carPhysics->m_position + m_carPhysics->m_velocity, sm::Vec3(0, 1, 0));
 
-	VectorGraphics::DrawSegment(m_carPhysics->m_position, m_carPhysics->m_position + m_carPhysics->m_bodyDirection * m_carPhysics->m_velocityLong, sm::Vec3(0, 1, 1));
-	VectorGraphics::DrawSegment(m_carPhysics->m_position, m_carPhysics->m_position + sm::Vec3(m_carPhysics->m_bodyDirection.z, 0, -m_carPhysics->m_bodyDirection.x) * m_carPhysics->m_velocityLat, sm::Vec3(0, 1, 1));
+	///////////
+	//VectorGraphics::DrawSegment(m_carPhysics->m_position, m_carPhysics->m_position + m_carPhysics->m_velocity, sm::Vec3(0, 1, 0));
+
+	//VectorGraphics::DrawSegment(m_carPhysics->m_position, m_carPhysics->m_position + m_carPhysics->m_bodyDirection * m_carPhysics->m_velocityLong, sm::Vec3(0, 1, 1));
+	//VectorGraphics::DrawSegment(m_carPhysics->m_position, m_carPhysics->m_position + sm::Vec3(m_carPhysics->m_bodyDirection.z, 0, -m_carPhysics->m_bodyDirection.x) * m_carPhysics->m_velocityLat, sm::Vec3(0, 1, 1));
+	/////////
 
 	//VectorGraphics::DrawSquare(
 	//	sm::Matrix::TranslateMatrix(m_carPhysics->m_position) *
@@ -363,11 +367,11 @@ void GameScreen::Update(float time, float seconds)
 
 	m_carPhysics->Update(seconds);
 
-	char text[1024];
-	sprintf(text, "Speed = %.2f km/h", m_carPhysics->m_speed * (3600.0f / 1000.0f));
-	GraphicsLog::AddLog(text);
-	sprintf(text, "Speed = %.2f m/s", m_carPhysics->m_speed);
-	GraphicsLog::AddLog(text);
+	//char text[1024];
+	//sprintf(text, "Speed = %.2f km/h", m_carPhysics->m_speed * (3600.0f / 1000.0f));
+	//GraphicsLog::AddLog(text);
+	//sprintf(text, "Speed = %.2f m/s", m_carPhysics->m_speed);
+	//GraphicsLog::AddLog(text);
 }
 
 void GameScreen::Reset()

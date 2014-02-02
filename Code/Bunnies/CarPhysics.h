@@ -32,10 +32,6 @@ public:
 	const sm::Vec3& GetPosition() const;
 	
 protected:
-	static const float DragConstant;
-	static const float ResistanceConstant;
-	static const float SoftBrakeConstant;
-
 	float m_engineForce;
 	float m_totalMass;
 
@@ -51,37 +47,13 @@ protected:
 
 	float m_wheelAxisWidth;
 
-	sm::Vec3 m_longFrontForce;
-	sm::Vec3 m_longRearForce;
-
-	sm::Vec3 m_tractionForce;
-	sm::Vec3 m_dragForce;
-	sm::Vec3 m_resistanceForce;
-
-	sm::Vec3 m_wheelDirForce;
-	sm::Vec3 m_wheelMoveForce;
-
-	sm::Vec3 m_Ff; // finar force, that is net force of all forces
-	sm::Vec3 m_Fm; // move force
-	sm::Vec3 m_Fe; // engine force
-
-	float m_velocityLong;
-	float m_velocityLat;
-
-	sm::Vec3 m_velocity;
-	sm::Vec3 m_acceleration;
-	float m_speed;
-
 	sm::Vec3 m_position;
 
 	WheelPhysics *m_wheels[4];
 
-	float GetLateralForce(float slipAngle);
-	sm::Vec3 GetFrontWheelsWorldDirection();
-	sm::Vec3 CalculateCorneringForce();
-
 	sm::Matrix m_transform;
 
+	sm::Vec3 GetFrontWheelsWorldDirection();
 	const sm::Matrix& GetTransform() const;
 };
 
