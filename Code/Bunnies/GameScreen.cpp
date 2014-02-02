@@ -81,7 +81,8 @@ sm::Matrix proj;
 
 bool GameScreen::Initialize()
 {
-	proj = sm::Matrix::Ortho2DMatrix(-20, 20, -20, 20);
+	float screenSize = 40.0f;
+	proj = sm::Matrix::Ortho2DMatrix(-screenSize, screenSize, -screenSize, screenSize);
 	view = sm::Matrix::Identity;
 
 	m_fontKomika = InterfaceProvider::GetFontRenderer("digital_bold_24");
@@ -134,7 +135,7 @@ bool GameScreen::Initialize()
 	m_rect1Angle = 0.0f;
 
 	m_carPhysics = new CarPhysics();
-	m_carPhysics->SetEngineForce(4.0f * 1000.0f);
+	m_carPhysics->SetEngineForce(1.0f * 1000.0f);
 	m_carPhysics->SetTotalMass(1000.0f);
 	m_carPhysics->SetParameters(1.2f, 1.2f);
 
@@ -196,7 +197,7 @@ void GameScreen::Draw(float time, float seconds)
 	m_spriteShader->UseProgram();
 
 	sm::Matrix viewMatrix =
-		sm::Matrix::TranslateMatrix(0, 0, -10) *
+		sm::Matrix::TranslateMatrix(-carPosition.x, carPosition.z, -10) *
 		sm::Matrix::RotateAxisMatrix(MathUtils::PI2, 1, 0, 0);
 
 #if 0

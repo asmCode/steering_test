@@ -45,10 +45,15 @@ void WheelPhysics::Update(
 	m_velocityLong = sm::Vec3::Dot(m_direction, velocity);
 	m_velocityLat = sm::Vec3::Dot(sideDirection, velocity);
 
+	float scale = 10.0f;
+	GraphicsLog::AddSegment(worldPosition, worldPosition + velocity*scale, sm::Vec3(0, 1, 0));
+	GraphicsLog::AddSegment(worldPosition, worldPosition + m_direction * m_velocityLong*scale, sm::Vec3(0, 1, 1));
+	GraphicsLog::AddSegment(worldPosition, worldPosition + sideDirection * m_velocityLat*scale, sm::Vec3(0, 1, 1));
+
 	GraphicsLog::AddLog(std::string("m_velocityLong = ") + StringUtils::ToString(m_velocityLong));
 	GraphicsLog::AddLog(std::string("m_velocityLat = ") + StringUtils::ToString(m_velocityLat));
 
-	float sideSpeed = 20.0f;
+	float sideSpeed = 5.0f;
 
 	m_velocityLat -= MathUtils::Min(MathUtils::Abs(m_velocityLat), sideSpeed * seconds) * MathUtils::Sign(m_velocityLat);
 

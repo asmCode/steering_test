@@ -128,7 +128,7 @@ void CarPhysics::Update(float seconds)
 	m_velocity = netVelocity;
 	m_position *= 0.25f;
 
-	m_bodyDirection = (frontLeftWheelPosition - backLeftWheelPosition).GetNormalized().GetReversed();
+	m_bodyDirection = (frontLeftWheelPosition - backLeftWheelPosition).GetNormalized();
 
 	m_speed = m_velocity.GetLength();
 
@@ -146,15 +146,17 @@ void CarPhysics::Update(float seconds)
 	m_velocity += m_acceleration * seconds;
 	m_position += m_velocity * seconds;
 
-	if (m_position.x < -20)
-		m_position.x = 20;
-	if (m_position.x > 20)
-		m_position.x = -20;
+	float screenSize = 40.0f;
 
-	if (m_position.z < -20)
-		m_position.z = 20;
-	if (m_position.z > 20)
-		m_position.z = -20;
+	if (m_position.x < -screenSize)
+		m_position.x = screenSize;
+	if (m_position.x > screenSize)
+		m_position.x = -screenSize;
+
+	if (m_position.z < -screenSize)
+		m_position.z = screenSize;
+	if (m_position.z > screenSize)
+		m_position.z = -screenSize;
 
 	/////////////////////////////////////////
 
@@ -162,7 +164,7 @@ void CarPhysics::Update(float seconds)
 
 	m_transform =
 		sm::Matrix::TranslateMatrix(m_position) *
-		sm::Matrix::CreateLookAt2(m_bodyDirection, sm::Vec3(0, 1, 0));
+		sm::Matrix::CreateLookAt2(m_bodyDirection.GetReversed(), sm::Vec3(0, 1, 0));
 }
 
 const sm::Matrix& CarPhysics::GetTransform() const
