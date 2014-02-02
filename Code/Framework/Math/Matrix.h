@@ -143,7 +143,7 @@ namespace sm
 			return matrix;
 		}
 
-		Vec3 TransformNormal(const Vec3& normal);
+		Vec3 TransformNormal(const Vec3& normal) const;
 
 		//TODO: nietestowane!
 		static Matrix RotateXMatrix(float angle)

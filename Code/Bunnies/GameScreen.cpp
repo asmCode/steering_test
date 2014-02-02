@@ -19,7 +19,9 @@
 #include <Audio/SoundManager.h>
 #include "HUD.h"
 #include "CarPhysics.h"
+#include "WheelPhysics.h"
 #include "VectorGraphics.h"
+#include "GraphicsLog.h"
 
 #include <Math/MathUtils.h>
 #include <UserInput/Input2.h>
@@ -33,14 +35,12 @@
 #include <Graphics/Content/Content.h>
 #include <Utils/Log.h>
 #include <Utils/StringUtils.h>
-
 #include <Graphics/OpenglPort.h>
 
 GameScreen *GameScreen::m_instance;
 
 #include <vector>
 extern std::vector<sm::Vec3> debugSpheres;
-extern std::vector<std::string> debugLog;
 
 GameScreen::GameScreen(GameController *gameController) :
 	m_gameController(gameController),
@@ -310,12 +310,21 @@ void GameScreen::Draw(float time, float seconds)
 	VectorGraphics::DrawSegment(m_carPhysics->m_position, m_carPhysics->m_position + m_carPhysics->m_bodyDirection * m_carPhysics->m_velocityLong, sm::Vec3(0, 1, 1));
 	VectorGraphics::DrawSegment(m_carPhysics->m_position, m_carPhysics->m_position + sm::Vec3(m_carPhysics->m_bodyDirection.z, 0, -m_carPhysics->m_bodyDirection.x) * m_carPhysics->m_velocityLat, sm::Vec3(0, 1, 1));
 
-	VectorGraphics::DrawSquare(
-		sm::Matrix::TranslateMatrix(m_carPhysics->m_position) *
-		sm::Matrix::CreateLookAt2(m_carPhysics->m_bodyDirection.GetReversed(), sm::Vec3(0, 1, 0)) *
-		//sm::Matrix::TranslateMatrix(m_carSize.x / 2, 0.0f, -m_carPhysics->m_frontAxisDistance) *
-		//sm::Matrix::RotateAxisMatrix(m_carPhysics->m_steerAngle, 0, 1, 0) *
-		sm::Matrix::ScaleMatrix(1.0f, 1.0f, 2.0f));
+	//VectorGraphics::DrawSquare(
+	//	sm::Matrix::TranslateMatrix(m_carPhysics->m_position) *
+	//	sm::Matrix::CreateLookAt2(m_carPhysics->m_bodyDirection.GetReversed(), sm::Vec3(0, 1, 0)) *
+	//	//sm::Matrix::TranslateMatrix(m_carSize.x / 2, 0.0f, -m_carPhysics->m_frontAxisDistance) *
+	//	//sm::Matrix::RotateAxisMatrix(m_carPhysics->m_steerAngle, 0, 1, 0) *
+	//	sm::Matrix::ScaleMatrix(1.0f, 1.0f, 2.0f));
+
+	for (int i = 0; i < 4; i++)
+	{
+		VectorGraphics::DrawSquare(
+			m_carPhysics->GetTransform() *
+			m_carPhysics->m_wheels[i]->GetRelativeTransform() *
+			//sm::Matrix::CreateLookAt2(m_carPhysics->m_bodyDirection.GetReversed(), sm::Vec3(0, 1, 0)) *
+			sm::Matrix::ScaleMatrix(1.0f, 1.0f, 2.0f));
+	}
 
 	VectorGraphics::End();
 }
@@ -347,7 +356,7 @@ void GameScreen::Update(float time, float seconds)
 	if (Input2::GetKey(KeyCode::KeyCode_Right))
 		steerAngle -= 2.0f * seconds;
 
-	//steerAngle = MathUtils::Clamp(steerAngle, -MathUtils::PI4, MathUtils::PI4);
+	steerAngle = MathUtils::Clamp(steerAngle, -MathUtils::PI4, MathUtils::PI4);
 
 	m_carPhysics->SetSteerAngle(steerAngle);
 
@@ -355,9 +364,9 @@ void GameScreen::Update(float time, float seconds)
 
 	char text[1024];
 	sprintf(text, "Speed = %.2f km/h", m_carPhysics->m_speed * (3600.0f / 1000.0f));
-	debugLog.push_back(text);
+	GraphicsLog::AddLog(text);
 	sprintf(text, "Speed = %.2f m/s", m_carPhysics->m_speed);
-	debugLog.push_back(text);
+	GraphicsLog::AddLog(text);
 }
 
 void GameScreen::Reset()

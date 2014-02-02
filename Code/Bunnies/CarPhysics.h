@@ -3,6 +3,8 @@
 
 #include <Math/Matrix.h>
 
+class WheelPhysics;
+
 class CarPhysics
 {
 	friend class GameScreen;
@@ -47,6 +49,8 @@ protected:
 
 	float m_accPedal;
 
+	float m_wheelAxisWidth;
+
 	sm::Vec3 m_longFrontForce;
 	sm::Vec3 m_longRearForce;
 
@@ -70,9 +74,15 @@ protected:
 
 	sm::Vec3 m_position;
 
+	WheelPhysics *m_wheels[4];
+
 	float GetLateralForce(float slipAngle);
 	sm::Vec3 GetFrontWheelsWorldDirection();
 	sm::Vec3 CalculateCorneringForce();
+
+	sm::Matrix m_transform;
+
+	const sm::Matrix& GetTransform() const;
 };
 
 #endif // CAR_PHYSICS

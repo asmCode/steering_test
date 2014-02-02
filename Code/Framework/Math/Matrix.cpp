@@ -50,7 +50,7 @@ Matrix Matrix::CreateLookAt2(const sm::Vec3 &direction, const sm::Vec3 &up)
 	return rot;
 }
 
-Vec3 Matrix::TransformNormal(const Vec3& normal)
+Vec3 Matrix::TransformNormal(const Vec3& normal) const
 {
 	Vec3 ret;
 

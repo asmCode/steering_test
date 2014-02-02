@@ -26,12 +26,12 @@
 #include <stddef.h>
 #include <stdlib.h>
 #include <assert.h>
+#include "GraphicsLog.h"
 
 // TEMP
 #include <Graphics/IDrawable.h>
 #include <vector>
 std::vector<IDrawable*> debugDrawables;
-std::vector<std::string> debugLog;
 Model *debugSphere;
 
 std::vector<sm::Vec3> debugSpheres;
@@ -72,7 +72,8 @@ bool GameController::InitializeGraphics(const std::string &basePath)
 
 	Shader *shader = m_content->Get<Shader>("sprite");
 
-	SpriteBatch *spriteBatch = new SpriteBatch(shader, sm::Matrix::Ortho2DMatrix(0, screenWidth, screenHeight, 0));
+	SpriteBatch *spriteBatch = new SpriteBatch(
+		shader, sm::Matrix::Ortho2DMatrix(0, static_cast<float>(screenWidth), static_cast<float>(screenHeight), 0));
 
 	SpritesMap *spritesMap = new SpritesMap();
 	if (!spritesMap->LoadFromFile(basePath + "data/gui/SpritesMap.xml", m_content))
@@ -96,6 +97,10 @@ bool GameController::InitializeGraphics(const std::string &basePath)
 	Sprite::Initialize(spriteShader);
 
 	Control::SetSpriteBatch(spriteBatch);
+
+	FontRenderer* font = InterfaceProvider::GetFontRenderer("digital_bold_24");
+	SpriteBatch* sb = InterfaceProvider::GetSpriteBatch();
+	GraphicsLog::Initialize(sb, font);
 	
 	return true;
 }
@@ -149,24 +154,16 @@ void GameController::Draw(float time, float seconds)
 
 	m_activeScreen->Draw(time, seconds);
 
-	for (int i = 0; i < debugDrawables.size(); i++)
+	for (unsigned int i = 0; i < debugDrawables.size(); i++)
 		debugDrawables[i]->Draw(time, seconds);
 
 	glClear(GL_DEPTH_BUFFER_BIT);
-	for (int i = 0; i < debugSpheres.size(); i++)
+	for (unsigned int i = 0; i < debugSpheres.size(); i++)
 		DrawingRoutines::DrawWithMaterial(debugSphere->m_meshParts, sm::Matrix::TranslateMatrix(debugSpheres[i]) * sm::Matrix::ScaleMatrix(0.2f, 0.2f, 0.2f));
 	debugSpheres.clear();
 
-	FontRenderer* font = InterfaceProvider::GetFontRenderer("digital_bold_24");
-	SpriteBatch* sb = InterfaceProvider::GetSpriteBatch();
 
-	sb->Begin();
-	int yShift = 10;
-	int yStep = 30;
-	for (int i = 0; i < debugLog.size(); i++)
-		font->DrawString(debugLog[i].c_str(), 10, yShift += yStep, Color::White, 1.0f);
-	sb->End();
-	debugLog.clear();
+	GraphicsLog::DrawAndClear();
 }
 
 void GameController::Update(float time, float seconds)
