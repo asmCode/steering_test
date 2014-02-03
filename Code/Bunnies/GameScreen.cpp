@@ -135,7 +135,7 @@ bool GameScreen::Initialize()
 	m_rect1Angle = 0.0f;
 
 	m_carPhysics = new CarPhysics();
-	m_carPhysics->SetEngineForce(8.0f * 1000.0f);
+	m_carPhysics->SetEngineForce(15.0f * 1000.0f);
 	m_carPhysics->SetTotalMass(1000.0f);
 	m_carPhysics->SetParameters(1.2f, 1.2f);
 
@@ -197,8 +197,8 @@ void GameScreen::Draw(float time, float seconds)
 	m_spriteShader->UseProgram();
 
 	sm::Matrix viewMatrix =
-		//sm::Matrix::TranslateMatrix(-carPosition.x, carPosition.z, -10) *
-		sm::Matrix::TranslateMatrix(0, 0, -10) *
+		sm::Matrix::TranslateMatrix(-carPosition.x, carPosition.z, -10) *
+		//sm::Matrix::TranslateMatrix(0, 0, -10) *
 		sm::Matrix::RotateAxisMatrix(MathUtils::PI2, 1, 0, 0);
 
 #if 0
@@ -332,6 +332,30 @@ void GameScreen::Draw(float time, float seconds)
 	}
 
 	VectorGraphics::End();
+
+	// drawing grid
+
+	float screenSize = 40.0f;
+	float baseY = m_carPhysics->GetPosition().z - fmodf(m_carPhysics->GetPosition().z, 20.0f);
+	float baseX = m_carPhysics->GetPosition().x - fmodf(m_carPhysics->GetPosition().x, 20.0f);
+
+	for (float y = -screenSize + baseY; y <= screenSize + baseY; y += 20.0f)
+	{
+		GraphicsLog::AddSegment(
+			sm::Vec3(-screenSize + m_carPhysics->GetPosition().x, 0, y),
+			sm::Vec3(screenSize + m_carPhysics->GetPosition().x, 0, y),
+			sm::Vec3(0.2f, 0.2f, 0.2f));
+	}
+
+	for (float x = -screenSize + baseX; x <= screenSize + baseX; x += 20.0f)
+	{
+		GraphicsLog::AddSegment(
+			sm::Vec3(x, 0, -screenSize + m_carPhysics->GetPosition().z),
+			sm::Vec3(x, 0, screenSize + m_carPhysics->GetPosition().z),
+			sm::Vec3(0.2f, 0.2f, 0.2f));
+	}
+
+	///////////////
 }
 
 void GameScreen::SetPenalty(float value)
@@ -353,13 +377,25 @@ void GameScreen::Update(float time, float seconds)
 	else
 		m_carPhysics->PushAccelerationPedal(0.0f);
 
+	bool isSteeringWheel = false;
 	float steerAngle = m_carPhysics->m_steerAngle;
 
 	if (Input2::GetKey(KeyCode::KeyCode_Left))
-		steerAngle += 2.0f * seconds;
+	{
+		steerAngle += 1.0f * seconds;
+		isSteeringWheel = true;
+	}
 
 	if (Input2::GetKey(KeyCode::KeyCode_Right))
-		steerAngle -= 2.0f * seconds;
+	{
+		steerAngle -= 1.0f * seconds;
+		isSteeringWheel = true;
+	}
+
+	if (!isSteeringWheel)
+	{
+		steerAngle -= MathUtils::Min(MathUtils::Abs(steerAngle), 1.0f * seconds) * MathUtils::Sign(steerAngle);
+	}
 
 	steerAngle = MathUtils::Clamp(steerAngle, -MathUtils::PI4, MathUtils::PI4);
 

@@ -65,7 +65,7 @@ void WheelPhysics::Update(
 	m_velocityLong = sm::Vec3::Dot(m_direction, m_velocity);
 	m_velocityLat = sm::Vec3::Dot(sideDirection, m_velocity);
 
-	float sideSpeed = 20.0f;
+	float sideSpeed = 80.0f;
 	m_velocityLat -= MathUtils::Min(MathUtils::Abs(m_velocityLat), sideSpeed * seconds) * MathUtils::Sign(m_velocityLat);
 	m_velocity = m_direction * m_velocityLong + sideDirection * m_velocityLat;
 

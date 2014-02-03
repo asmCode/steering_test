@@ -116,7 +116,8 @@ void CarPhysics::Update(float seconds)
 
 	float screenSize = 40.0f;
 
-	if (m_position.x < -screenSize)
+
+	/*if (m_position.x < -screenSize)
 		m_position.x = screenSize;
 	if (m_position.x > screenSize)
 		m_position.x = -screenSize;
@@ -124,7 +125,7 @@ void CarPhysics::Update(float seconds)
 	if (m_position.z < -screenSize)
 		m_position.z = screenSize;
 	if (m_position.z > screenSize)
-		m_position.z = -screenSize;
+		m_position.z = -screenSize;*/
 
 	/////////////////////////////////////////
 
