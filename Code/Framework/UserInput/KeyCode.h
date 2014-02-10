@@ -6,6 +6,7 @@ enum KeyCode
 	KeyCode_Down,
 
 	KeyCode_A,
+	KeyCode_E,
 	KeyCode_D,
 	KeyCode_S,
 	KeyCode_W,

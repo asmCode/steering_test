@@ -81,7 +81,7 @@ sm::Matrix proj;
 
 bool GameScreen::Initialize()
 {
-	float screenSize = 40.0f;
+	float screenSize = 20.0f;
 	proj = sm::Matrix::Ortho2DMatrix(-screenSize, screenSize, -screenSize, screenSize);
 	view = sm::Matrix::Identity;
 
@@ -135,7 +135,7 @@ bool GameScreen::Initialize()
 	m_rect1Angle = 0.0f;
 
 	m_carPhysics = new CarPhysics();
-	m_carPhysics->SetEngineForce(15.0f * 1000.0f);
+	m_carPhysics->SetEngineForce(2.0f * 1000.0f);
 	m_carPhysics->SetTotalMass(1000.0f);
 	m_carPhysics->SetParameters(1.2f, 1.2f);
 
@@ -328,18 +328,18 @@ void GameScreen::Draw(float time, float seconds)
 			m_carPhysics->GetTransform() *
 			m_carPhysics->m_wheels[i]->GetRelativeTransform() *
 			//sm::Matrix::CreateLookAt2(m_carPhysics->m_bodyDirection.GetReversed(), sm::Vec3(0, 1, 0)) *
-			sm::Matrix::ScaleMatrix(1.0f, 1.0f, 2.0f));
+			sm::Matrix::ScaleMatrix(0.2f, 1.0f, 0.4f));
 	}
 
 	VectorGraphics::End();
 
 	// drawing grid
 
-	float screenSize = 40.0f;
-	float baseY = m_carPhysics->GetPosition().z - fmodf(m_carPhysics->GetPosition().z, 20.0f);
-	float baseX = m_carPhysics->GetPosition().x - fmodf(m_carPhysics->GetPosition().x, 20.0f);
+	float screenSize = 20.0f;
+	float baseY = m_carPhysics->GetPosition().z - fmodf(m_carPhysics->GetPosition().z, 10.0f);
+	float baseX = m_carPhysics->GetPosition().x - fmodf(m_carPhysics->GetPosition().x, 10.0f);
 
-	for (float y = -screenSize + baseY; y <= screenSize + baseY; y += 20.0f)
+	for (float y = -screenSize + baseY; y <= screenSize + baseY; y += 10.0f)
 	{
 		GraphicsLog::AddSegment(
 			sm::Vec3(-screenSize + m_carPhysics->GetPosition().x, 0, y),
@@ -347,7 +347,7 @@ void GameScreen::Draw(float time, float seconds)
 			sm::Vec3(0.2f, 0.2f, 0.2f));
 	}
 
-	for (float x = -screenSize + baseX; x <= screenSize + baseX; x += 20.0f)
+	for (float x = -screenSize + baseX; x <= screenSize + baseX; x += 10.0f)
 	{
 		GraphicsLog::AddSegment(
 			sm::Vec3(x, 0, -screenSize + m_carPhysics->GetPosition().z),
@@ -368,6 +368,12 @@ void GameScreen::SetPenalty(float value)
 
 void GameScreen::Update(float time, float seconds)
 {
+	if (Input2::GetKey(KeyCode::KeyCode_W))
+		seconds *= 0.1f;
+
+	if (Input2::GetKey(KeyCode::KeyCode_E))
+		seconds *= 10.0f;
+
 	/*if (Input2::GetKey(KeyCode::KeyCode_Left))
 		m_rect1Pos.x -= 0.1f;
 	if (Input2::GetKey(KeyCode::KeyCode_Right))
@@ -382,19 +388,19 @@ void GameScreen::Update(float time, float seconds)
 
 	if (Input2::GetKey(KeyCode::KeyCode_Left))
 	{
-		steerAngle += 1.0f * seconds;
+		steerAngle += 1.5f * seconds;
 		isSteeringWheel = true;
 	}
 
 	if (Input2::GetKey(KeyCode::KeyCode_Right))
 	{
-		steerAngle -= 1.0f * seconds;
+		steerAngle -= 1.5f * seconds;
 		isSteeringWheel = true;
 	}
 
 	if (!isSteeringWheel)
 	{
-		steerAngle -= MathUtils::Min(MathUtils::Abs(steerAngle), 1.0f * seconds) * MathUtils::Sign(steerAngle);
+		steerAngle -= MathUtils::Min(MathUtils::Abs(steerAngle), 1.5f * seconds) * MathUtils::Sign(steerAngle);
 	}
 
 	steerAngle = MathUtils::Clamp(steerAngle, -MathUtils::PI4, MathUtils::PI4);

@@ -16,6 +16,7 @@ bool Input2::Constructor()
 	Input2::m_keyMap[KeyCode_Down] = VK_DOWN;
 
 	Input2::m_keyMap[KeyCode_A] = 'A';
+	Input2::m_keyMap[KeyCode_E] = 'E';
 	Input2::m_keyMap[KeyCode_D] = 'D';
 	Input2::m_keyMap[KeyCode_S] = 'S';
 	Input2::m_keyMap[KeyCode_W] = 'W';

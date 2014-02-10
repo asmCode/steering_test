@@ -55,6 +55,8 @@ protected:
 
 	sm::Vec3 GetFrontWheelsWorldDirection();
 	const sm::Matrix& GetTransform() const;
+
+	sm::Vec3 m_lastPosition;
 };
 
 #endif // CAR_PHYSICS

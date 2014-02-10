@@ -21,6 +21,7 @@ CarPhysics::CarPhysics() :
 	//m_longForce(0.0f, 0.0f, 0.0f),
 	m_wheelAxisWidth(1.0f),
 	m_position(0, 0, 0),
+	m_lastPosition(0, 0, 0),
 	m_steerAngle(0.0f),
 	m_bodyDirection(0, 0, -1.0f)
 {
@@ -30,20 +31,24 @@ CarPhysics::CarPhysics() :
 		m_wheels[i] = new WheelPhysics();
 
 	m_wheels[0]->SetParameters(20.0f);
+	m_wheels[0]->SetTireGrip(20.0f);
 	m_wheels[0]->SetRelativeAngle(0.0f);
-	m_wheels[0]->SetRelativePosition(sm::Vec3(-2.5f, 0, -5.0f));
+	m_wheels[0]->SetRelativePosition(sm::Vec3(-0.7f, 0, -1.35f));
 
 	m_wheels[1]->SetParameters(20.0f);
+	m_wheels[1]->SetTireGrip(20.0f);
 	m_wheels[1]->SetRelativeAngle(0.0f);
-	m_wheels[1]->SetRelativePosition(sm::Vec3(2.5f, 0, -5.0f));
+	m_wheels[1]->SetRelativePosition(sm::Vec3(0.7f, 0, -1.35f));
 
 	m_wheels[2]->SetParameters(20.0f);
+	m_wheels[2]->SetTireGrip(20.0f);
 	m_wheels[2]->SetRelativeAngle(0.0f);
-	m_wheels[2]->SetRelativePosition(sm::Vec3(-2.5f, 0, 5.0f));
+	m_wheels[2]->SetRelativePosition(sm::Vec3(-0.7f, 0, 1.35f));
 
 	m_wheels[3]->SetParameters(20.0f);
+	m_wheels[3]->SetTireGrip(20.0f);
 	m_wheels[3]->SetRelativeAngle(0.0f);
-	m_wheels[3]->SetRelativePosition(sm::Vec3(2.5f, 0, 5.0f));
+	m_wheels[3]->SetRelativePosition(sm::Vec3(0.7f, 0, 1.35f));
 }
 
 CarPhysics::~CarPhysics()
@@ -70,6 +75,8 @@ void CarPhysics::SetParameters(
 	m_frontAxisDistance = frontAxisDistance;
 	m_rearAxisDistance = rearAxisDistance;
 }
+
+#include <UserInput/Input2.h>
 
 void CarPhysics::Update(float seconds)
 {
@@ -98,7 +105,8 @@ void CarPhysics::Update(float seconds)
 
 	for (int i = 0; i < 4; i++)
 	{
-		m_wheels[i]->SetEngineForce(m_engineForce * m_accPedal);
+		
+			m_wheels[i]->SetEngineForce(m_engineForce * m_accPedal * 1.0f);
 
 		m_wheels[i]->Update(seconds, m_transform, wheelPosition);
 		m_position += wheelPosition;
@@ -113,6 +121,9 @@ void CarPhysics::Update(float seconds)
 	m_position *= 0.25f;
 
 	m_bodyDirection = (frontLeftWheelPosition - backLeftWheelPosition).GetNormalized();
+
+	if (Input2::GetKeyDown(KeyCode_Q))
+		m_bodyDirection.RotateY(MathUtils::PI2);
 
 	float screenSize = 40.0f;
 
@@ -129,7 +140,12 @@ void CarPhysics::Update(float seconds)
 
 	/////////////////////////////////////////
 
+	float distance = (m_position - m_lastPosition).GetLength();
+	float speed = distance / seconds;
+	m_lastPosition = m_position;
 
+	GraphicsLog::AddLog(std::string("speed (m/s) = ") + StringUtils::ToString(speed));
+	GraphicsLog::AddLog(std::string("speed (km/h) = ") + StringUtils::ToString(speed * (3600.0f / 1000.0f)));
 
 	m_transform =
 		sm::Matrix::TranslateMatrix(m_position) *

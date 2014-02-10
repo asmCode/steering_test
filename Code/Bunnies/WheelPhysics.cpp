@@ -8,7 +8,7 @@
 #include <vector>
 extern std::vector<sm::Vec3> debugSpheres;
 
-const float WheelPhysics::DragConstant = 2.0f;
+const float WheelPhysics::DragConstant = 1.0f;
 const float WheelPhysics::ResistanceConstant = 30.0f * WheelPhysics::DragConstant;
 const float WheelPhysics::SoftBrakeConstant = 100.0f;
 
@@ -23,7 +23,8 @@ WheelPhysics::WheelPhysics() :
 	m_velocity(0.0f, 0.0f, 0.0f),
 	m_speed(0.0f),
 	m_engineForce(0.0f),
-	m_mass(500.0f)
+	m_mass(500.0f),
+	m_tireGrip(20.0f)
 {
 	m_Ff.Set(0, 0, 0);
 	m_Fm.Set(0, 0, 0);
@@ -33,6 +34,11 @@ WheelPhysics::WheelPhysics() :
 void WheelPhysics::SetEngineForce(float engineForce)
 {
 	m_engineForce = engineForce;
+}
+
+void WheelPhysics::SetTireGrip(float tireGrip)
+{
+	m_tireGrip = tireGrip;
 }
 
 void WheelPhysics::SetMass(float mass)
@@ -54,9 +60,10 @@ void WheelPhysics::Update(
 	m_direction.RotateY(-m_angle);
 
 	m_direction = carTransform.TransformNormal(m_direction);
+	m_direction.Normalize();
 
 	sm::Vec3 worldPosition = carTransform * m_position;
-	GraphicsLog::AddSegment(worldPosition, worldPosition + m_direction * 2.0f);
+	//GraphicsLog::AddSegment(worldPosition, worldPosition + m_direction * 2.0f);
 
 	MathUtils::FixToZero(m_velocity);
 
@@ -65,8 +72,7 @@ void WheelPhysics::Update(
 	m_velocityLong = sm::Vec3::Dot(m_direction, m_velocity);
 	m_velocityLat = sm::Vec3::Dot(sideDirection, m_velocity);
 
-	float sideSpeed = 80.0f;
-	m_velocityLat -= MathUtils::Min(MathUtils::Abs(m_velocityLat), sideSpeed * seconds) * MathUtils::Sign(m_velocityLat);
+	m_velocityLat -= MathUtils::Min(MathUtils::Abs(m_velocityLat), m_tireGrip*1 * seconds) * MathUtils::Sign(m_velocityLat);
 	m_velocity = m_direction * m_velocityLong + sideDirection * m_velocityLat;
 
 	m_speed = m_velocity.GetLength();

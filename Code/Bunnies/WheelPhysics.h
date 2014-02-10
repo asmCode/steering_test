@@ -27,6 +27,7 @@ public:
 
 	void SetEngineForce(float engineForce);
 	void SetMass(float mass);
+	void SetTireGrip(float tireGrip);
 	
 protected:
 	static const float DragConstant;
@@ -35,6 +36,7 @@ protected:
 
 	float m_angle;
 	float m_friction;
+	float m_tireGrip;
 	sm::Vec3 m_position; // position relative to car
 
 	sm::Vec3 m_Ff; // finar force, that is net force of all forces
