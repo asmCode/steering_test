@@ -1,0 +1,344 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{FBCFA621-C7CE-4E14-A97F-1680382163C7}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>HerdBunniesSimulator</RootNamespace>
+    <ProjectName>BunniesHerdSimulator</ProjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>NotSet</CharacterSet>
+    <PlatformToolset>v120</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v120</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;GL_GLEXT_PROTOTYPES;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>d:\stuff\Taxi\car_physic_test_arcade\Code\Framework;D:\stuff\Infected Bunnies\code\ssg02\HerdBunniesSimulator\Contrib\;C:\Users\majak\code\Machineris\Code\headers\;D:\stuff\Infected Bunnies\code\ssg02\HerdBunniesSimulator\Ext\opengl;D:\stuff\Taxi\Code\Ext;d:\stuff\Infected Bunnies\code\ssg02\HerdBunniesSimulator\Ext\glew-1.9.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>opengl32.lib;glu32.lib;"d:\stuff\Infected Bunnies\code\ssg02\HerdBunniesSimulator\Ext\libpng\libpng15.lib";"d:\stuff\Infected Bunnies\code\ssg02\HerdBunniesSimulator\Ext\zlib\zlib.lib";"d:\stuff\Infected Bunnies\code\ssg02\HerdBunniesSimulator\Ext\glew-1.9.0\lib\glew32.lib";"d:\stuff\Taxi\Code\Ext\bass\bass.lib";%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="BunniesView\IInputObserver.h" />
+    <ClInclude Include="BunniesView\Input.h" />
+    <ClInclude Include="BunniesView\OpenglWindow.h" />
+    <ClInclude Include="BunniesView\Renderer.h" />
+    <ClInclude Include="BunniesView\TimeControl.h" />
+    <ClInclude Include="Bunnies\AnimButton.h" />
+    <ClInclude Include="Bunnies\Arrow.h" />
+    <ClInclude Include="Bunnies\BaseCar.h" />
+    <ClInclude Include="Bunnies\Billboard.h" />
+    <ClInclude Include="Bunnies\Car.h" />
+    <ClInclude Include="Bunnies\CarPhysics.h" />
+    <ClInclude Include="Bunnies\ColliderId.h" />
+    <ClInclude Include="Bunnies\ColliderType.h" />
+    <ClInclude Include="Bunnies\Collider.h" />
+    <ClInclude Include="Bunnies\CollisionInfo.h" />
+    <ClInclude Include="Bunnies\CollisionManager.h" />
+    <ClInclude Include="Bunnies\GraphicsLog.h" />
+    <ClInclude Include="Bunnies\IColliderHolder.h" />
+    <ClInclude Include="Bunnies\LightsCollider.h" />
+    <ClInclude Include="Bunnies\PausePanel.h" />
+    <ClInclude Include="Bunnies\Player.h" />
+    <ClInclude Include="Bunnies\BoxCollider.h" />
+    <ClInclude Include="Bunnies\Sprite.h" />
+    <ClInclude Include="Bunnies\StreetLights.h" />
+    <ClInclude Include="Bunnies\StreetPath.h" />
+    <ClInclude Include="Bunnies\SummaryScreen.h" />
+    <ClInclude Include="Bunnies\SummaryPanel.h" />
+    <ClInclude Include="Bunnies\Inflater.h" />
+    <ClInclude Include="Bunnies\Control.h" />
+    <ClInclude Include="Bunnies\DrawingRoutines.h" />
+    <ClInclude Include="Bunnies\Environment.h" />
+    <ClInclude Include="Bunnies\GameController.h" />
+    <ClInclude Include="Bunnies\GameScreen.h" />
+    <ClInclude Include="Bunnies\IControlEventsObserver.h" />
+    <ClInclude Include="Bunnies\GameProps.h" />
+    <ClInclude Include="Bunnies\IGameController.h" />
+    <ClInclude Include="Bunnies\InfectedBunniesFactory.h" />
+    <ClInclude Include="Bunnies\InterfaceProvider.h" />
+    <ClInclude Include="Bunnies\IScreen.h" />
+    <ClInclude Include="Bunnies\HUD.h" />
+    <ClInclude Include="Bunnies\Label.h" />
+    <ClInclude Include="Bunnies\MainMenuPanel.h" />
+    <ClInclude Include="Bunnies\MainMenuScreen.h" />
+    <ClInclude Include="Bunnies\ManCam.h" />
+    <ClInclude Include="Bunnies\Ped.h" />
+    <ClInclude Include="Bunnies\PedsManager.h" />
+    <ClInclude Include="Bunnies\PlaceIndicator.h" />
+    <ClInclude Include="Bunnies\SplashScreen.h" />
+    <ClInclude Include="Bunnies\SpritesMap.h" />
+    <ClInclude Include="Bunnies\Street.h" />
+    <ClInclude Include="Bunnies\StreetMap.h" />
+    <ClInclude Include="Bunnies\StreetPassenger.h" />
+    <ClInclude Include="Bunnies\StreetPiece.h" />
+    <ClInclude Include="Bunnies\StreetSegment.h" />
+    <ClInclude Include="Bunnies\Taxi.h" />
+    <ClInclude Include="Bunnies\ThrowTrajectory.h" />
+    <ClInclude Include="Bunnies\Ticker.h" />
+    <ClInclude Include="Bunnies\TrafficManager.h" />
+    <ClInclude Include="Bunnies\VectorGraphics.h" />
+    <ClInclude Include="Bunnies\WheelPhysics.h" />
+    <ClInclude Include="Framework\Audio\AlAudioPlayer.h" />
+    <ClInclude Include="Framework\Audio\AudioPlayerFactory.h" />
+    <ClInclude Include="Framework\Audio\BassPlayer.h" />
+    <ClInclude Include="Framework\Audio\IAudioPlayer.h" />
+    <ClInclude Include="Framework\Audio\SoundManager.h" />
+    <ClInclude Include="Framework\Engine\Collision\CircleCollider.h" />
+    <ClInclude Include="Framework\Engine\Collision\CollisionInfo2d.h" />
+    <ClInclude Include="Framework\Engine\Collision\CollisionTester.h" />
+    <ClInclude Include="Framework\Engine\Collision\RectCollider.h" />
+    <ClInclude Include="Framework\Graphics\Animation.h" />
+    <ClInclude Include="Framework\Graphics\OpenglPort.h" />
+    <ClInclude Include="Framework\Graphics\AnimationLoader.h" />
+    <ClInclude Include="Framework\Graphics\BoundingBox.h" />
+    <ClInclude Include="Framework\Graphics\BoundingSphere.h" />
+    <ClInclude Include="Framework\Graphics\Color.h" />
+    <ClInclude Include="Framework\Graphics\Content\Content.h" />
+    <ClInclude Include="Framework\Graphics\DepthTexture.h" />
+    <ClInclude Include="Framework\Graphics\FontLetter.h" />
+    <ClInclude Include="Framework\Graphics\FontRenderer.h" />
+    <ClInclude Include="Framework\Graphics\Framebuffer.h" />
+    <ClInclude Include="Framework\Graphics\GraphicsEngineFactory.h" />
+    <ClInclude Include="Framework\Graphics\GraphicsEngineWin.h" />
+    <ClInclude Include="Framework\Graphics\ICgContextService.h" />
+    <ClInclude Include="Framework\Graphics\IDrawable.h" />
+    <ClInclude Include="Framework\Graphics\IGlContextService.h" />
+    <ClInclude Include="Framework\Graphics\IGraphicsEngine.h" />
+    <ClInclude Include="Framework\Graphics\Image.h" />
+    <ClInclude Include="Framework\Graphics\ImageLoader.h" />
+    <ClInclude Include="Framework\Graphics\ImageUtils.h" />
+    <ClInclude Include="Framework\Graphics\Interpolators\IInterpolator.h" />
+    <ClInclude Include="Framework\Graphics\Interpolators\IKeysContainer.h" />
+    <ClInclude Include="Framework\Graphics\Interpolators\Interpolator.h" />
+    <ClInclude Include="Framework\Graphics\Interpolators\InterpolatorFactory.h" />
+    <ClInclude Include="Framework\Graphics\Interpolators\KeyFrame.h" />
+    <ClInclude Include="Framework\Graphics\Interpolators\LinearInterpolator.h" />
+    <ClInclude Include="Framework\Graphics\Interpolators\StateInterpolator.h" />
+    <ClInclude Include="Framework\Graphics\Interpolators\TCBInterpolator.h" />
+    <ClInclude Include="Framework\Graphics\ITransformable.h" />
+    <ClInclude Include="Framework\Graphics\IUpdateable.h" />
+    <ClInclude Include="Framework\Graphics\Material.h" />
+    <ClInclude Include="Framework\Graphics\MaterialLoader.h" />
+    <ClInclude Include="Framework\Graphics\Mesh.h" />
+    <ClInclude Include="Framework\Graphics\MeshPart.h" />
+    <ClInclude Include="Framework\Graphics\Model.h" />
+    <ClInclude Include="Framework\Graphics\ModelLoader.h" />
+    <ClInclude Include="Framework\Graphics\PngLoader.h" />
+    <ClInclude Include="Framework\Graphics\Point.h" />
+    <ClInclude Include="Framework\Graphics\Rect.h" />
+    <ClInclude Include="Framework\Graphics\Shader.h" />
+    <ClInclude Include="Framework\Graphics\SpriteAnim.h" />
+    <ClInclude Include="Framework\Graphics\SpriteBatch.h" />
+    <ClInclude Include="Framework\Graphics\SteerCamera.h" />
+    <ClInclude Include="Framework\Graphics\TexPart.h" />
+    <ClInclude Include="Framework\Graphics\Texture.h" />
+    <ClInclude Include="Framework\Graphics\TextureLoader.h" />
+    <ClInclude Include="Framework\Graphics\Vertex.h" />
+    <ClInclude Include="Framework\Graphics\VertexAttrib.h" />
+    <ClInclude Include="Framework\Graphics\VertexAttribBit.h" />
+    <ClInclude Include="Framework\Graphics\VertexInformation.h" />
+    <ClInclude Include="Framework\Graphics\VertexP.h" />
+    <ClInclude Include="Framework\Graphics\VertexPC2N.h" />
+    <ClInclude Include="Framework\Graphics\VertexPC2NT.h" />
+    <ClInclude Include="Framework\Graphics\VertexPCN.h" />
+    <ClInclude Include="Framework\Graphics\VertexPCNT.h" />
+    <ClInclude Include="Framework\Graphics\VertexPN.h" />
+    <ClInclude Include="Framework\Graphics\VertexType.h" />
+    <ClInclude Include="Framework\IO\BinaryReader.h" />
+    <ClInclude Include="Framework\IO\BinaryWriter.h" />
+    <ClInclude Include="Framework\IO\Path.h" />
+    <ClInclude Include="Framework\Math\MathUtils.h" />
+    <ClInclude Include="Framework\Math\Matrix.h" />
+    <ClInclude Include="Framework\Math\Plane.h" />
+    <ClInclude Include="Framework\Math\Quat.h" />
+    <ClInclude Include="Framework\Math\Vec2.h" />
+    <ClInclude Include="Framework\Math\Vec3.h" />
+    <ClInclude Include="Framework\UI\IGestureHandler.h" />
+    <ClInclude Include="Framework\UserInput\Input2.h" />
+    <ClInclude Include="Framework\UserInput\KeyCode.h" />
+    <ClInclude Include="Framework\Utils\Log.h" />
+    <ClInclude Include="Framework\Utils\Randomizer.h" />
+    <ClInclude Include="Framework\Utils\StringUtils.h" />
+    <ClInclude Include="Framework\XML\XMLLoader.h" />
+    <ClInclude Include="Framework\XML\XMLNode.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="BunniesView\OpenglWindow.cpp" />
+    <ClCompile Include="BunniesView\Renderer.cpp" />
+    <ClCompile Include="BunniesView\TimeControl.cpp" />
+    <ClCompile Include="BunniesView\WinMain.cpp" />
+    <ClCompile Include="Bunnies\AnimButton.cpp" />
+    <ClCompile Include="Bunnies\Arrow.cpp" />
+    <ClCompile Include="Bunnies\BaseCar.cpp" />
+    <ClCompile Include="Bunnies\Billboard.cpp" />
+    <ClCompile Include="Bunnies\Car.cpp" />
+    <ClCompile Include="Bunnies\CarPhysics.cpp" />
+    <ClCompile Include="Bunnies\Collider.cpp" />
+    <ClCompile Include="Bunnies\CollisionManager.cpp" />
+    <ClCompile Include="Bunnies\GraphicsLog.cpp" />
+    <ClCompile Include="Bunnies\LightsCollider.cpp" />
+    <ClCompile Include="Bunnies\PausePanel.cpp" />
+    <ClCompile Include="Bunnies\Player.cpp" />
+    <ClCompile Include="Bunnies\BoxCollider.cpp" />
+    <ClCompile Include="Bunnies\Sprite.cpp" />
+    <ClCompile Include="Bunnies\StreetLights.cpp" />
+    <ClCompile Include="Bunnies\StreetPath.cpp" />
+    <ClCompile Include="Bunnies\SummaryScreen.cpp" />
+    <ClCompile Include="Bunnies\SummaryPanel.cpp" />
+    <ClCompile Include="Bunnies\Inflater.cpp" />
+    <ClCompile Include="Bunnies\Control.cpp" />
+    <ClCompile Include="Bunnies\DrawingRoutines.cpp" />
+    <ClCompile Include="Bunnies\Environment.cpp" />
+    <ClCompile Include="Bunnies\GameController.cpp" />
+    <ClCompile Include="Bunnies\GameScreen.cpp" />
+    <ClCompile Include="Bunnies\GameProps.cpp" />
+    <ClCompile Include="Bunnies\InfectedBunniesFactory.cpp" />
+    <ClCompile Include="Bunnies\InterfaceProvider.cpp" />
+    <ClCompile Include="Bunnies\HUD.cpp" />
+    <ClCompile Include="Bunnies\Label.cpp" />
+    <ClCompile Include="Bunnies\MainMenuPanel.cpp" />
+    <ClCompile Include="Bunnies\MainMenuScreen.cpp" />
+    <ClCompile Include="Bunnies\ManCam.cpp" />
+    <ClCompile Include="Bunnies\Ped.cpp" />
+    <ClCompile Include="Bunnies\PedsManager.cpp" />
+    <ClCompile Include="Bunnies\PlaceIndicator.cpp" />
+    <ClCompile Include="Bunnies\SplashScreen.cpp" />
+    <ClCompile Include="Bunnies\SpritesMap.cpp" />
+    <ClCompile Include="Bunnies\Street.cpp" />
+    <ClCompile Include="Bunnies\StreetMap.cpp" />
+    <ClCompile Include="Bunnies\StreetPassenger.cpp" />
+    <ClCompile Include="Bunnies\StreetPiece.cpp" />
+    <ClCompile Include="Bunnies\StreetSegment.cpp" />
+    <ClCompile Include="Bunnies\Taxi.cpp" />
+    <ClCompile Include="Bunnies\ThrowTrajectory.cpp" />
+    <ClCompile Include="Bunnies\Ticker.cpp" />
+    <ClCompile Include="Bunnies\TrafficManager.cpp" />
+    <ClCompile Include="Bunnies\VectorGraphics.cpp" />
+    <ClCompile Include="Bunnies\WheelPhysics.cpp" />
+    <ClCompile Include="Ext\tinyxml\tinyxml2.cpp" />
+    <ClCompile Include="Framework\Audio\AlAudioPlayer.cpp" />
+    <ClCompile Include="Framework\Audio\AudioPlayerFactory.cpp" />
+    <ClCompile Include="Framework\Audio\BassPlayer.cpp" />
+    <ClCompile Include="Framework\Audio\SoundManager.cpp" />
+    <ClCompile Include="Framework\Engine\Collision\CircleCollider.cpp" />
+    <ClCompile Include="Framework\Engine\Collision\CollisionTester.cpp" />
+    <ClCompile Include="Framework\Engine\Collision\RectCollider.cpp" />
+    <ClCompile Include="Framework\Graphics\Animation.cpp" />
+    <ClCompile Include="Framework\Graphics\AnimationLoader.cpp" />
+    <ClCompile Include="Framework\Graphics\BoundingBox.cpp" />
+    <ClCompile Include="Framework\Graphics\BoundingSphere.cpp" />
+    <ClCompile Include="Framework\Graphics\Color.cpp" />
+    <ClCompile Include="Framework\Graphics\Content\Content.cpp" />
+    <ClCompile Include="Framework\Graphics\DepthTexture.cpp" />
+    <ClCompile Include="Framework\Graphics\FontLetter.cpp" />
+    <ClCompile Include="Framework\Graphics\FontRenderer.cpp" />
+    <ClCompile Include="Framework\Graphics\Framebuffer.cpp" />
+    <ClCompile Include="Framework\Graphics\GraphicsEngineFactory.cpp" />
+    <ClCompile Include="Framework\Graphics\GraphicsEngineWin.cpp" />
+    <ClCompile Include="Framework\Graphics\Image.cpp" />
+    <ClCompile Include="Framework\Graphics\ImageUtils.cpp" />
+    <ClCompile Include="Framework\Graphics\Material.cpp" />
+    <ClCompile Include="Framework\Graphics\MaterialLoader.cpp" />
+    <ClCompile Include="Framework\Graphics\Mesh.cpp" />
+    <ClCompile Include="Framework\Graphics\MeshPart.cpp" />
+    <ClCompile Include="Framework\Graphics\Model.cpp" />
+    <ClCompile Include="Framework\Graphics\ModelLoader.cpp" />
+    <ClCompile Include="Framework\Graphics\Shader.cpp" />
+    <ClCompile Include="Framework\Graphics\SpriteAnim.cpp" />
+    <ClCompile Include="Framework\Graphics\SpriteBatch.cpp" />
+    <ClCompile Include="Framework\Graphics\SteerCamera.cpp" />
+    <ClCompile Include="Framework\Graphics\TexPart.cpp" />
+    <ClCompile Include="Framework\Graphics\Texture.cpp" />
+    <ClCompile Include="Framework\Graphics\TextureLoader.cpp" />
+    <ClCompile Include="Framework\Graphics\VertexInformation.cpp" />
+    <ClCompile Include="Framework\Graphics\Win\ImageLoader.cpp" />
+    <ClCompile Include="Framework\IO\BinaryReader.cpp" />
+    <ClCompile Include="Framework\IO\BinaryWriter.cpp" />
+    <ClCompile Include="Framework\IO\Win32\Path.cpp" />
+    <ClCompile Include="Framework\Math\MathUtils.cpp" />
+    <ClCompile Include="Framework\Math\Matrix.cpp" />
+    <ClCompile Include="Framework\UserInput\Input2.cpp" />
+    <ClCompile Include="Framework\Utils\Log.cpp" />
+    <ClCompile Include="Framework\Utils\Randomizer.cpp" />
+    <ClCompile Include="Framework\Utils\StringUtils.cpp" />
+    <ClCompile Include="Framework\XML\XMLLoader.cpp" />
+    <ClCompile Include="Framework\XML\XMLNode.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="data\shaders\Diff.fpr" />
+    <None Include="data\shaders\Diff.vpr" />
+    <None Include="data\shaders\DiffTex.fpr" />
+    <None Include="data\shaders\DiffTex.vpr" />
+    <None Include="data\shaders\SolidColorSprite.fpr" />
+    <None Include="data\shaders\SolidColorSprite.vpr" />
+    <None Include="data\shaders\sprite.fpr" />
+    <None Include="data\shaders\sprite.vpr" />
+    <None Include="data\shaders\Sprite2.fpr" />
+    <None Include="data\shaders\Sprite2.vpr" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
