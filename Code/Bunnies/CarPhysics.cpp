@@ -77,7 +77,7 @@ void CarPhysics::Update(float seconds)
 	/*if (MathUtils::Abs(m_velocityLat) < 20.0f * seconds)
 		m_velocityLat = 0.0f;*/
 
-	float sideSpeed = 10.0f;
+	float sideSpeed = 50.0f;
 
 	/*if (m_speed < 30.0)
 		sideSpeed = 10.0f;
@@ -116,8 +116,16 @@ void CarPhysics::Update(float seconds)
 
 #endif
 
+	float steerAngleDelta = 0.0f;
+	float turnRadius = CalculateTurnRadius();
+	if (turnRadius != 0.0f)
+	{
+		steerAngleDelta = (m_speed * seconds) / (turnRadius);
+	}
+
+	m_steerAngle += steerAngleDelta;
 	m_bodyDirection.Set(0, 0, -1);
-	m_bodyDirection.RotateY(-m_steerAngle);
+	m_bodyDirection.RotateY(m_steerAngle);
 
 	m_Fe = m_bodyDirection * m_engineForce * m_accPedal;
 
