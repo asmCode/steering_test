@@ -26,10 +26,11 @@ public:
 	void PushAccelerationPedal(float value);
 
 	void SetSteerAngle(float angle);
+	void SetWheelAngle(float angle);
 
 	const sm::Vec3& GetPosition() const;
 	
-protected:
+public:
 	static const float DragConstant;
 	static const float ResistanceConstant;
 	static const float SoftBrakeConstant;
@@ -39,9 +40,10 @@ protected:
 
 	sm::Vec3 m_bodyDirection;
 	float m_steerAngle;
+	float m_wheelAngle;
 
-	float m_frontAxisDistance;
-	float m_rearAxisDistance;
+	float m_frontAxisShift;
+	float m_rearAxisShift;
 
 	sm::Vec3 m_direction;
 
@@ -73,6 +75,11 @@ protected:
 	float GetLateralForce(float slipAngle);
 	sm::Vec3 GetFrontWheelsWorldDirection();
 	sm::Vec3 CalculateCorneringForce();
+
+	sm::Matrix GetTransform();
+	sm::Vec3 GetFrontWheelsLocalDirection();
+
+	//void CalculateTurn(float speed, )
 };
 
 #endif // CAR_PHYSICS

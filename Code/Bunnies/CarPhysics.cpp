@@ -53,11 +53,11 @@ void CarPhysics::SetTotalMass(float totalMass)
 }
 
 void CarPhysics::SetParameters(
-	float frontAxisDistance,
-	float rearAxisDistance)
+	float frontAxisShift,
+	float rearAxisShift)
 {
-	m_frontAxisDistance = frontAxisDistance;
-	m_rearAxisDistance = rearAxisDistance;
+	m_frontAxisShift = frontAxisShift;
+	m_rearAxisShift = rearAxisShift;
 }
 
 void CarPhysics::Update(float seconds)
@@ -77,7 +77,7 @@ void CarPhysics::Update(float seconds)
 	/*if (MathUtils::Abs(m_velocityLat) < 20.0f * seconds)
 		m_velocityLat = 0.0f;*/
 
-	float sideSpeed = 20.0f;
+	float sideSpeed = 10.0f;
 
 	/*if (m_speed < 30.0)
 		sideSpeed = 10.0f;
@@ -170,6 +170,11 @@ void CarPhysics::SetSteerAngle(float angle)
 	m_steerAngle = angle;
 }
 
+void CarPhysics::SetWheelAngle(float angle)
+{
+	m_wheelAngle = angle;
+}
+
 const sm::Vec3& CarPhysics::GetPosition() const
 {
 	return m_position;
@@ -222,4 +227,19 @@ sm::Vec3 CarPhysics::CalculateCorneringForce()
 	corneringForceVector *= frontLateralForce * cosDelta * 2 + rearLateralForce * 2;
 
 	return corneringForceVector;
+}
+
+sm::Matrix CarPhysics::GetTransform()
+{
+	return
+		sm::Matrix::TranslateMatrix(m_position) *
+		sm::Matrix::CreateLookAt2(m_bodyDirection.GetReversed(), sm::Vec3(0, 1, 0));
+}
+
+sm::Vec3 CarPhysics::GetFrontWheelsLocalDirection()
+{
+	sm::Vec3 localDirection(0, 0, -1);
+	localDirection.RotateY(m_wheelAngle);
+
+	return localDirection;
 }
