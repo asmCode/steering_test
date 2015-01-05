@@ -79,7 +79,7 @@ public:
 	sm::Matrix GetTransform();
 	sm::Vec3 GetFrontWheelsLocalDirection();
 
-	//void CalculateTurn(float speed, )
+	float CalculateTurnRadius();
 };
 
 #endif // CAR_PHYSICS

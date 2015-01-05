@@ -323,6 +323,12 @@ void GameScreen::Draw(float time, float seconds)
 		carTransform * sm::Vec3(-10.0f, 0, m_carPhysics->m_rearAxisShift),
 		carTransform * sm::Vec3(10.0f, 0, m_carPhysics->m_rearAxisShift));
 
+	// turn radius
+	VectorGraphics::DrawSegment(
+		carTransform * sm::Vec3(m_carPhysics->CalculateTurnRadius(), 0, m_carPhysics->m_rearAxisShift + 0.2f),
+		carTransform * sm::Vec3(m_carPhysics->CalculateTurnRadius(), 0, m_carPhysics->m_rearAxisShift - 0.2f));
+	//
+
 	VectorGraphics::DrawSquare(
 		sm::Matrix::TranslateMatrix(m_carPhysics->m_position) *
 		sm::Matrix::CreateLookAt2(m_carPhysics->m_bodyDirection.GetReversed(), sm::Vec3(0, 1, 0)) *
@@ -356,18 +362,20 @@ void GameScreen::Update(float time, float seconds)
 
 	float steerAngle = m_carPhysics->m_steerAngle;
 
-	wheelAngle = 0.0f;
+	//wheelAngle = 0.0f;
 
 	if (Input2::GetKey(KeyCode::KeyCode_Left))
 	{
 		//steerAngle += 2.0f * seconds;
-		wheelAngle = -MathUtils::PI4;
+		//wheelAngle = -MathUtils::PI4;
+		wheelAngle -= 2.0f * seconds;
 	}
 
 	if (Input2::GetKey(KeyCode::KeyCode_Right))
 	{
 		//steerAngle -= 2.0f * seconds;
-		wheelAngle = MathUtils::PI4;
+		//wheelAngle = MathUtils::PI4;
+		wheelAngle += 2.0f * seconds;
 	}
 
 	//steerAngle = MathUtils::Clamp(steerAngle, -MathUtils::PI4, MathUtils::PI4);
@@ -382,6 +390,8 @@ void GameScreen::Update(float time, float seconds)
 	debugLog.push_back(text);
 	sprintf(text, "Speed = %.2f m/s", m_carPhysics->m_speed);
 	debugLog.push_back(text);
+
+	debugLog.push_back(std::string("turn radius = " + StringUtils::ToString(m_carPhysics->CalculateTurnRadius())));
 }
 
 void GameScreen::Reset()

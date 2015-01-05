@@ -243,3 +243,13 @@ sm::Vec3 CarPhysics::GetFrontWheelsLocalDirection()
 
 	return localDirection;
 }
+
+float CarPhysics::CalculateTurnRadius()
+{
+	if (m_wheelAngle == 0.0f)
+		return 0.0f;
+
+	float axesDistance = MathUtils::Abs(m_frontAxisShift - m_rearAxisShift);
+
+	return axesDistance * tanf(MathUtils::PI2 - MathUtils::Abs(m_wheelAngle)) * MathUtils::Sign(m_wheelAngle);
+}
