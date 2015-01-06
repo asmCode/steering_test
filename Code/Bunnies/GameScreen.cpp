@@ -136,7 +136,7 @@ bool GameScreen::Initialize()
 	m_carPhysics = new CarPhysics();
 	m_carPhysics->SetEngineForce(4.0f * 1000.0f);
 	m_carPhysics->SetTotalMass(1000.0f);
-	m_carPhysics->SetParameters(-3.2f, 0.0f);
+	m_carPhysics->SetParameters(-1.8f, 1.8f);
 
 	FontRenderer* font = InterfaceProvider::GetFontRenderer("digital_bold_24");
 
@@ -188,8 +188,6 @@ void GameScreen::Draw(float time, float seconds)
 		color1.Set(1.0f, 0.5f, 0.0f, 1.0f);
 		color2.Set(1.0f, 0.0f, 0.5f, 1.0f);
 	}
-
-	sm::Vec3 carPosition = m_carPhysics->GetPosition();
 
 	m_spriteShader->UseProgram();
 
@@ -304,17 +302,30 @@ void GameScreen::Draw(float time, float seconds)
 
 	VectorGraphics::Begin();
 
-	//VectorGraphics::DrawSegment(m_carPhysics->m_position, m_carPhysics->m_position + m_carPhysics->m_Fe, sm::Vec3(1, 0, 0));
-	VectorGraphics::DrawSegment(m_carPhysics->m_position, m_carPhysics->m_position + m_carPhysics->m_velocity, sm::Vec3(0, 1, 0));
+	//axis
+	VectorGraphics::DrawSegment(
+		sm::Vec3(-100.0f, 0, 0),
+		sm::Vec3(100.0f, 0, 0));
 
-	VectorGraphics::DrawSegment(m_carPhysics->m_position, m_carPhysics->m_position + m_carPhysics->m_bodyDirection * m_carPhysics->m_velocityLong, sm::Vec3(0, 1, 1));
-	VectorGraphics::DrawSegment(m_carPhysics->m_position, m_carPhysics->m_position + sm::Vec3(m_carPhysics->m_bodyDirection.z, 0, -m_carPhysics->m_bodyDirection.x) * m_carPhysics->m_velocityLat, sm::Vec3(0, 1, 1));
+	VectorGraphics::DrawSegment(
+		sm::Vec3(0, 0, -100.0f),
+		sm::Vec3(0, 0, 100.0f));
+	//
+
+	sm::Vec3 carPosition = carTransform * sm::Vec3(0, 0, 0);
+
+	//VectorGraphics::DrawSegment(m_carPhysics->m_position, m_carPhysics->m_position + m_carPhysics->m_Fe, sm::Vec3(1, 0, 0));
+	VectorGraphics::DrawSegment(carPosition, carPosition + m_carPhysics->m_velocity, sm::Vec3(0, 1, 0));
+
+	VectorGraphics::DrawSegment(carPosition, carPosition + m_carPhysics->m_bodyDirection * m_carPhysics->m_velocityLong, sm::Vec3(0, 1, 1));
+	VectorGraphics::DrawSegment(carPosition, carPosition + sm::Vec3(m_carPhysics->m_bodyDirection.z, 0, -m_carPhysics->m_bodyDirection.x) * m_carPhysics->m_velocityLat, sm::Vec3(0, 1, 1));
 
 	sm::Matrix frontAxisTransform =
 		carTransform *
 		sm::Matrix::TranslateMatrix(0, 0, m_carPhysics->m_frontAxisShift) *
 		sm::Matrix::CreateLookAt2(m_carPhysics->GetFrontWheelsLocalDirection().GetReversed(), sm::Vec3(0, 1, 0));
 
+	//axes
 	VectorGraphics::DrawSegment(
 		frontAxisTransform * sm::Vec3(-10.0f, 0, 0),
 		frontAxisTransform * sm::Vec3( 10.0f, 0, 0));
@@ -322,6 +333,7 @@ void GameScreen::Draw(float time, float seconds)
 	VectorGraphics::DrawSegment(
 		carTransform * sm::Vec3(-10.0f, 0, m_carPhysics->m_rearAxisShift),
 		carTransform * sm::Vec3(10.0f, 0, m_carPhysics->m_rearAxisShift));
+	//
 
 	// turn radius
 	VectorGraphics::DrawSegment(
@@ -329,12 +341,20 @@ void GameScreen::Draw(float time, float seconds)
 		carTransform * sm::Vec3(m_carPhysics->CalculateTurnRadius(), 0, m_carPhysics->m_rearAxisShift - 0.2f));
 	//
 
+	/*
 	VectorGraphics::DrawSquare(
 		sm::Matrix::TranslateMatrix(m_carPhysics->m_position) *
 		sm::Matrix::CreateLookAt2(m_carPhysics->m_bodyDirection.GetReversed(), sm::Vec3(0, 1, 0)) *
 		//sm::Matrix::TranslateMatrix(m_carSize.x / 2, 0.0f, -m_carPhysics->m_frontAxisDistance) *
 		//sm::Matrix::RotateAxisMatrix(m_carPhysics->m_steerAngle, 0, 1, 0) *
 		sm::Matrix::ScaleMatrix(1.0f, 1.0f, 2.0f));
+		*/
+
+	VectorGraphics::DrawSquare(
+		carTransform *
+		//sm::Matrix::TranslateMatrix(m_carSize.x / 2, 0.0f, -m_carPhysics->m_frontAxisDistance) *
+		//sm::Matrix::RotateAxisMatrix(m_carPhysics->m_steerAngle, 0, 1, 0) *
+		sm::Matrix::ScaleMatrix(2.0f, 1.0f, 4.0f));
 
 	VectorGraphics::End();
 }

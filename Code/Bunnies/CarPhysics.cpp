@@ -77,7 +77,7 @@ void CarPhysics::Update(float seconds)
 	/*if (MathUtils::Abs(m_velocityLat) < 20.0f * seconds)
 		m_velocityLat = 0.0f;*/
 
-	float sideSpeed = 50.0f;
+	float sideSpeed = 10.0f;
 
 	/*if (m_speed < 30.0)
 		sideSpeed = 10.0f;
@@ -120,7 +120,7 @@ void CarPhysics::Update(float seconds)
 	float turnRadius = CalculateTurnRadius();
 	if (turnRadius != 0.0f)
 	{
-		steerAngleDelta = (m_speed * seconds) / (turnRadius);
+		steerAngleDelta = (m_velocityLong * seconds) / (turnRadius);
 	}
 
 	m_steerAngle += steerAngleDelta;
@@ -241,7 +241,9 @@ sm::Matrix CarPhysics::GetTransform()
 {
 	return
 		sm::Matrix::TranslateMatrix(m_position) *
-		sm::Matrix::CreateLookAt2(m_bodyDirection.GetReversed(), sm::Vec3(0, 1, 0));
+		sm::Matrix::TranslateMatrix(sm::Vec3(0.0f, 0.0, m_rearAxisShift)) *
+		sm::Matrix::CreateLookAt2(m_bodyDirection.GetReversed(), sm::Vec3(0, 1, 0)) *
+		sm::Matrix::TranslateMatrix(sm::Vec3(0.0f, 0.0, -m_rearAxisShift));
 }
 
 sm::Vec3 CarPhysics::GetFrontWheelsLocalDirection()
