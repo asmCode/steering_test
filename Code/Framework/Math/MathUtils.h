@@ -231,6 +231,7 @@ public:
 	}
 
 	static void FixToZero(sm::Vec3& v);
+	static void FixToZero(float& v);
 
 	static float PI;
 	static float PI2;
