@@ -26,28 +26,26 @@ public:
 	void PushAccelerationPedal(float value);
 
 	void SetSteerAngle(float angle);
-	void SetWheelAngle(float angle);
 
 	const sm::Vec3& GetPosition() const;
+	sm::Vec3 GetBodyDirection() const;
 	
 private:
 	static const float DragConstant;
 	static const float ResistanceConstant;
 	static const float SoftBrakeConstant;
 
+	// car properties
 	float m_engineForceValue;
 	float m_totalMass;
-
-	sm::Vec3 m_bodyDirection;
-	float m_steerAngle;
-	float m_wheelAngle;
-
 	float m_frontAxisShift;
 	float m_rearAxisShift;
 
-	sm::Vec3 m_direction;
-
+	// input values
 	float m_accPedal;
+	float m_steerAngle;
+
+	float m_bodyAngle;
 
 	float m_velocityLong;
 	float m_velocityLat;
@@ -57,9 +55,6 @@ private:
 	float m_speed;
 
 	sm::Vec3 m_position;
-
-	sm::Vec3 GetFrontWheelsWorldDirection();
-	sm::Vec3 CalculateCorneringForce();
 
 	sm::Matrix GetTransform();
 	sm::Vec3 GetFrontWheelsLocalDirection();

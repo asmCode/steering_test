@@ -4,9 +4,6 @@
 #include <Utils/StringUtils.h>
 #include <assert.h>
 
-#include <float.h>
-unsigned int fp_control_state = _controlfp(_EM_INEXACT, _MCW_EM);
-
 #include <vector>
 extern std::vector<sm::Vec3> debugSpheres;
 extern std::vector<std::string> debugLog;
@@ -18,14 +15,13 @@ const float CarPhysics::SoftBrakeConstant = 100.0f;
 CarPhysics::CarPhysics() :
 	m_engineForceValue(0.0f),
 	m_totalMass(0.0f),
-	m_direction(0.0f, 0.0f, -1.0f),
 	m_accPedal(0.0f),
 	m_acceleration(0.0f, 0.0f, 0.0f),
 	m_velocity(0.0f, 0.0f, 0.0f),
 	m_speed(0.0f),
 	m_position(0, 0, 0),
 	m_steerAngle(0.0f),
-	m_bodyDirection(0, 0, -1.0f),
+	m_bodyAngle(0.0f),
 	m_velocityLong(0.0f),
 	m_velocityLat(0.0f)
 {
@@ -57,9 +53,11 @@ void CarPhysics::Update(float seconds)
 {
 	MathUtils::FixToZero(m_velocity);
 
-	sm::Vec3 sideBodyDirection(m_bodyDirection.z, 0, -m_bodyDirection.x);
+	sm::Vec3 bodyDirection = GetBodyDirection();
 
-	m_velocityLong = sm::Vec3::Dot(m_bodyDirection, m_velocity);
+	sm::Vec3 sideBodyDirection(bodyDirection.z, 0, -bodyDirection.x);
+
+	m_velocityLong = sm::Vec3::Dot(bodyDirection, m_velocity);
 	m_velocityLat = sm::Vec3::Dot(sideBodyDirection, m_velocity);
 
 	debugLog.push_back(std::string("m_velocityLong = ") + StringUtils::ToString(m_velocityLong));
@@ -69,7 +67,7 @@ void CarPhysics::Update(float seconds)
 
 	m_velocityLat -= MathUtils::Min(MathUtils::Abs(m_velocityLat), sideSpeed * seconds) * MathUtils::Sign(m_velocityLat);
 
-	m_velocity = m_bodyDirection * m_velocityLong + sideBodyDirection * m_velocityLat;
+	m_velocity = bodyDirection * m_velocityLong + sideBodyDirection * m_velocityLat;
 
 	m_speed = m_velocity.GetLength();
 
@@ -95,20 +93,18 @@ void CarPhysics::Update(float seconds)
 
 #endif
 
-	float steerAngleDelta = 0.0f;
+	float bodyAngleDelta = 0.0f;
 	float turnRadius = CalculateTurnRadius();
 	if (turnRadius != 0.0f)
 	{
-		steerAngleDelta = (m_velocityLong * seconds) / (turnRadius);
+		bodyAngleDelta = (m_velocityLong * seconds) / turnRadius;
 	}
 
-	m_steerAngle += steerAngleDelta;
-	m_bodyDirection.Set(0, 0, -1);
-	m_bodyDirection.RotateY(m_steerAngle);
+	m_bodyAngle += bodyAngleDelta;
 
-	sm::Vec3 engineForce = m_bodyDirection * m_engineForceValue * m_accPedal;
+	sm::Vec3 engineForce = bodyDirection * m_engineForceValue * m_accPedal;
 
-	// Net force of all other force. Car will move in this direction
+	// Net force of all other forces. Car will move in this direction
 	sm::Vec3 netForce = engineForce + dragForce + resistanceForce;
 
 	m_acceleration = netForce * (1.0f / m_totalMass);
@@ -139,11 +135,8 @@ void CarPhysics::PushAccelerationPedal(float value)
 void CarPhysics::SetSteerAngle(float angle)
 {
 	m_steerAngle = angle;
-}
 
-void CarPhysics::SetWheelAngle(float angle)
-{
-	m_wheelAngle = angle;
+	MathUtils::FixToZero(m_steerAngle);
 }
 
 const sm::Vec3& CarPhysics::GetPosition() const
@@ -151,12 +144,12 @@ const sm::Vec3& CarPhysics::GetPosition() const
 	return m_position;
 }
 
-sm::Vec3 CarPhysics::GetFrontWheelsWorldDirection()
+sm::Vec3 CarPhysics::GetBodyDirection() const
 {
-	sm::Vec3 frontDir = m_bodyDirection;
-	frontDir.RotateY(-m_steerAngle);
+	sm::Vec3 direction(0, 0, -1);
+	direction.RotateY(m_bodyAngle);
 
-	return frontDir;
+	return direction;
 }
 
 sm::Matrix CarPhysics::GetTransform()
@@ -164,24 +157,28 @@ sm::Matrix CarPhysics::GetTransform()
 	return
 		sm::Matrix::TranslateMatrix(m_position) *
 		sm::Matrix::TranslateMatrix(sm::Vec3(0.0f, 0.0, m_rearAxisShift)) *
-		sm::Matrix::CreateLookAt2(m_bodyDirection.GetReversed(), sm::Vec3(0, 1, 0)) *
+		sm::Matrix::RotateAxisMatrix(-m_bodyAngle, sm::Vec3(0, 1, 0)) *
 		sm::Matrix::TranslateMatrix(sm::Vec3(0.0f, 0.0, -m_rearAxisShift));
 }
 
 sm::Vec3 CarPhysics::GetFrontWheelsLocalDirection()
 {
 	sm::Vec3 localDirection(0, 0, -1);
-	localDirection.RotateY(m_wheelAngle);
+	localDirection.RotateY(m_steerAngle);
 
 	return localDirection;
 }
 
 float CarPhysics::CalculateTurnRadius()
 {
-	if (m_wheelAngle == 0.0f)
+	if (m_steerAngle == 0.0f)
 		return 0.0f;
 
 	float axesDistance = MathUtils::Abs(m_frontAxisShift - m_rearAxisShift);
 
-	return axesDistance * tanf(MathUtils::PI2 - MathUtils::Abs(m_wheelAngle)) * MathUtils::Sign(m_wheelAngle);
+	float turnRadius = axesDistance * tanf(MathUtils::PI2 - MathUtils::Abs(m_steerAngle)) * MathUtils::Sign(m_steerAngle);
+
+	MathUtils::FixToZero(turnRadius);
+
+	return turnRadius;
 }
