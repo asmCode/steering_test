@@ -22,7 +22,7 @@ public:
 	void Update(float seconds);
 	void Draw();
 
-	// 0 means release pedal, 1 means pedal to the metal
+	// 0.0 means release pedal, 1.0 means pedal to the metal
 	void PushAccelerationPedal(float value);
 
 	void SetSteerAngle(float angle);
@@ -30,12 +30,12 @@ public:
 
 	const sm::Vec3& GetPosition() const;
 	
-public:
+private:
 	static const float DragConstant;
 	static const float ResistanceConstant;
 	static const float SoftBrakeConstant;
 
-	float m_engineForce;
+	float m_engineForceValue;
 	float m_totalMass;
 
 	sm::Vec3 m_bodyDirection;
@@ -49,20 +49,6 @@ public:
 
 	float m_accPedal;
 
-	sm::Vec3 m_longFrontForce;
-	sm::Vec3 m_longRearForce;
-
-	sm::Vec3 m_tractionForce;
-	sm::Vec3 m_dragForce;
-	sm::Vec3 m_resistanceForce;
-
-	sm::Vec3 m_wheelDirForce;
-	sm::Vec3 m_wheelMoveForce;
-
-	sm::Vec3 m_Ff; // finar force, that is net force of all forces
-	sm::Vec3 m_Fm; // move force
-	sm::Vec3 m_Fe; // engine force
-
 	float m_velocityLong;
 	float m_velocityLat;
 
@@ -72,7 +58,6 @@ public:
 
 	sm::Vec3 m_position;
 
-	float GetLateralForce(float slipAngle);
 	sm::Vec3 GetFrontWheelsWorldDirection();
 	sm::Vec3 CalculateCorneringForce();
 
