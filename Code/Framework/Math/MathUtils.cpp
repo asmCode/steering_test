@@ -7,7 +7,7 @@ float MathUtils::PI4 = 0.78539816339744f;
 
 void MathUtils::FixToZero(float& v)
 {
-	if (Abs(v) <= FLT_EPSILON)
+	if (Abs(v) <= FLT_EPSILON && v != 0.0f)
 		v = 0.0f;
 }
 
