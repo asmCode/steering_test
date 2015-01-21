@@ -89,7 +89,7 @@ void CarPhysics::Update(float seconds)
 	sm::Vec3 engineForce = bodyDirection * m_engineForceValue * m_accPedal;
 
 	// Net force of all other forces. Car will move in this direction
-	sm::Vec3 netForce = engineForce.GetReversed() + dragForce + resistanceForce;
+	sm::Vec3 netForce = engineForce + dragForce + resistanceForce;
 
 	m_acceleration = netForce * (1.0f / m_totalMass);
 	m_velocity += m_acceleration * seconds;

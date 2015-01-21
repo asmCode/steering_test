@@ -281,6 +281,8 @@ void GameScreen::Update(float time, float seconds)
 		m_rect1Pos.x += 0.1f;*/
 	if (Input2::GetKey(KeyCode::KeyCode_Up))
 		m_carPhysics->PushAccelerationPedal(1.0f);
+	else if (Input2::GetKey(KeyCode::KeyCode_Down))
+		m_carPhysics->PushAccelerationPedal(-0.5f);
 	else
 		m_carPhysics->PushAccelerationPedal(0.0f);
 
