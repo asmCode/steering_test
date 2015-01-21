@@ -232,6 +232,7 @@ public:
 
 	static void FixToZero(sm::Vec3& v);
 	static void FixToZero(float& v);
+	static float LinearDamp(float start, float end, float change);
 
 	static float PI;
 	static float PI2;

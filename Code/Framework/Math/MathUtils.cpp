@@ -17,3 +17,13 @@ void MathUtils::FixToZero(sm::Vec3& v)
 	FixToZero(v.y);
 	FixToZero(v.z);
 }
+
+float MathUtils::LinearDamp(float start, float end, float change)
+{
+	float diff = end - start;
+
+	if (Abs(diff) <= Abs(change))
+		return 0.0f;
+
+	return start + change * Sign(diff);
+}

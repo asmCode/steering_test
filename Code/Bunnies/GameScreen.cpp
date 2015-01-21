@@ -134,7 +134,7 @@ bool GameScreen::Initialize()
 	m_rect1Angle = 0.0f;
 
 	m_carPhysics = new CarPhysics();
-	m_carPhysics->SetEngineForce(4.0f * 1000.0f);
+	m_carPhysics->SetEngineForce(8.0f * 1000.0f);
 	m_carPhysics->SetTotalMass(1000.0f);
 	m_carPhysics->SetParameters(-1.8f, 1.8f);
 
