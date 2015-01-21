@@ -63,7 +63,7 @@ void CarPhysics::Update(float seconds)
 	debugLog.push_back(std::string("m_velocityLong = ") + StringUtils::ToString(m_velocityLong));
 	debugLog.push_back(std::string("m_velocityLat = ") + StringUtils::ToString(m_velocityLat));
 
-	float sideSpeed = 4.0f;
+	float sideSpeed = 35.0f;
 
 	m_velocityLat = MathUtils::LinearDamp(m_velocityLat, 0.0f, sideSpeed * seconds);
 

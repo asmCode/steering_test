@@ -280,7 +280,9 @@ void GameScreen::SetPenalty(float value)
 	m_penaltyLabel->SetMarginTop(50);
 }
 
-float wheelAngle = 0.0f;
+float steerAngleLimit = MathUtils::PI / 7.0f;
+float steerSpeed = 1.0f;
+float steerBackSpeed = 1.0f;
 
 void GameScreen::Update(float time, float seconds)
 {
@@ -329,13 +331,18 @@ void GameScreen::Update(float time, float seconds)
 
 	if (Input2::GetKey(KeyCode::KeyCode_Left))
 	{
-		steerAngle -= 2.0f * seconds;
+		steerAngle -= steerSpeed * seconds;
+	}
+	else if (Input2::GetKey(KeyCode::KeyCode_Right))
+	{
+		steerAngle += steerSpeed * seconds;
+	}
+	else
+	{
+		steerAngle = MathUtils::LinearDamp(steerAngle, 0.0, steerBackSpeed * seconds);
 	}
 
-	if (Input2::GetKey(KeyCode::KeyCode_Right))
-	{
-		steerAngle += 2.0f * seconds;
-	}
+	steerAngle = MathUtils::Clamp(steerAngle, -steerAngleLimit, steerAngleLimit);
 
 	//steerAngle = MathUtils::Clamp(steerAngle, -MathUtils::PI4, MathUtils::PI4);
 
