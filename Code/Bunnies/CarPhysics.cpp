@@ -77,25 +77,6 @@ void CarPhysics::Update(float seconds)
 	sm::Vec3 dragForce = m_velocity * m_speed * -DragConstant;
 	sm::Vec3 resistanceForce = m_velocity * -ResistanceConstant;
 
-#if 0
-	float cosSlipAngle = MathUtils::Clamp(sm::Vec3::Dot(m_bodyDirection, m_velocity.GetNormalized()), -1.0f, 1.0f);
-	debugLog.push_back(std::string("cosSlipAngle = ") + StringUtils::ToString(cosSlipAngle));
-		
-	if (m_speed > 0.0f)
-	{
-		sm::Vec3 breakForce;//= m_velocity.GetReversed().GetNormalized() * seconds;
-
-		breakForce = m_velocity.GetReversed().GetNormalized() * seconds; // engine resists
-		breakForce += m_velocity.GetReversed().GetNormalized() * 10.0f * (1.0f - cosSlipAngle) * seconds;
-
-		if (breakForce.GetLength() < m_speed)
-			m_velocity += breakForce;
-		else
-			m_velocity.Set(0, 0, 0);
-	}
-
-#endif
-
 	float bodyAngleDelta = 0.0f;
 	float turnRadius = CalculateTurnRadius();
 	if (turnRadius != 0.0f)
@@ -108,7 +89,7 @@ void CarPhysics::Update(float seconds)
 	sm::Vec3 engineForce = bodyDirection * m_engineForceValue * m_accPedal;
 
 	// Net force of all other forces. Car will move in this direction
-	sm::Vec3 netForce = engineForce + dragForce + resistanceForce;
+	sm::Vec3 netForce = engineForce.GetReversed() + dragForce + resistanceForce;
 
 	m_acceleration = netForce * (1.0f / m_totalMass);
 	m_velocity += m_acceleration * seconds;
