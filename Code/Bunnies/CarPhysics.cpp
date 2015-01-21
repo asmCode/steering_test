@@ -136,6 +136,21 @@ sm::Vec3 CarPhysics::GetBodyDirection() const
 	return direction;
 }
 
+float CarPhysics::GetSpeed() const
+{
+	return m_velocity.GetLength();
+}
+
+float CarPhysics::GetForwardSpeed() const
+{
+	return m_velocityLong;
+}
+
+float CarPhysics::GetSideSpeed() const
+{
+	return m_velocityLat;
+}
+
 sm::Matrix CarPhysics::GetTransform()
 {
 	return

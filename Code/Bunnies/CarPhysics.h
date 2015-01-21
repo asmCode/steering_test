@@ -29,6 +29,9 @@ public:
 
 	const sm::Vec3& GetPosition() const;
 	sm::Vec3 GetBodyDirection() const;
+	float GetSpeed() const;
+	float GetForwardSpeed() const;
+	float GetSideSpeed() const;
 	
 private:
 	static const float DragConstant;

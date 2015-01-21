@@ -79,6 +79,15 @@ GameScreen *GameScreen::GetInstance()
 sm::Matrix view;
 sm::Matrix proj;
 
+enum BreakPedalFunction
+{
+	BreakPedalFunction_None,
+	BreakPedalFunction_Break,
+	BreakPedalFunction_Reverse
+};
+
+BreakPedalFunction breakPedalFunction;
+
 bool GameScreen::Initialize()
 {
 	proj = sm::Matrix::Ortho2DMatrix(-20, 20, -20, 20);
@@ -275,6 +284,14 @@ float wheelAngle = 0.0f;
 
 void GameScreen::Update(float time, float seconds)
 {
+	if (Input2::GetKeyDown(KeyCode::KeyCode_Down))
+	{
+		if (m_carPhysics->GetForwardSpeed() > 0.0f)
+			breakPedalFunction = BreakPedalFunction_Break;
+		else
+			breakPedalFunction = BreakPedalFunction_Reverse;
+	}
+
 	/*if (Input2::GetKey(KeyCode::KeyCode_Left))
 		m_rect1Pos.x -= 0.1f;
 	if (Input2::GetKey(KeyCode::KeyCode_Right))
@@ -282,7 +299,27 @@ void GameScreen::Update(float time, float seconds)
 	if (Input2::GetKey(KeyCode::KeyCode_Up))
 		m_carPhysics->PushAccelerationPedal(1.0f);
 	else if (Input2::GetKey(KeyCode::KeyCode_Down))
-		m_carPhysics->PushAccelerationPedal(-0.5f);
+	{
+		switch (breakPedalFunction)
+		{
+		case BreakPedalFunction_Break:
+			if (m_carPhysics->GetForwardSpeed() > 0.0f)
+				m_carPhysics->PushAccelerationPedal(-1.5f);
+			else
+			{
+				breakPedalFunction = BreakPedalFunction_None;
+				m_carPhysics->PushAccelerationPedal(0.0f);
+			}
+			break;
+
+		case BreakPedalFunction_Reverse:
+			m_carPhysics->PushAccelerationPedal(-0.5f);
+			break;
+
+		case BreakPedalFunction_None:
+			break;
+		}
+	}
 	else
 		m_carPhysics->PushAccelerationPedal(0.0f);
 
