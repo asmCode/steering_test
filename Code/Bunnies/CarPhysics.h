@@ -14,10 +14,8 @@ public:
 
 	void SetEngineForce(float engineForce);
 	void SetTotalMass(float totalMass);
-
-	void SetParameters(
-		float frontAxisDistance,
-		float rearAxisDistance);
+	void SetAxesDistances(float frontAxisDistance, float rearAxisDistance);
+	void SetTraction(float traction);
 
 	void Update(float seconds);
 	void Draw();
@@ -43,6 +41,7 @@ private:
 	float m_totalMass;
 	float m_frontAxisShift;
 	float m_rearAxisShift;
+	float m_traction;
 
 	// input values
 	float m_accPedal;

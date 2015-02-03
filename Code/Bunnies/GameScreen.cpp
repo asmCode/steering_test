@@ -145,7 +145,8 @@ bool GameScreen::Initialize()
 	m_carPhysics = new CarPhysics();
 	m_carPhysics->SetEngineForce(8.0f * 1000.0f);
 	m_carPhysics->SetTotalMass(1000.0f);
-	m_carPhysics->SetParameters(-1.8f, 1.8f);
+	m_carPhysics->SetAxesDistances(-1.8f, 1.8f);
+	m_carPhysics->SetTraction(15.0f);
 
 	FontRenderer* font = InterfaceProvider::GetFontRenderer("digital_bold_24");
 

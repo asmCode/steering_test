@@ -23,7 +23,8 @@ CarPhysics::CarPhysics() :
 	m_steerAngle(0.0f),
 	m_bodyAngle(0.0f),
 	m_velocityLong(0.0f),
-	m_velocityLat(0.0f)
+	m_velocityLat(0.0f),
+	m_traction(0.0f)
 {
 }
 
@@ -41,9 +42,12 @@ void CarPhysics::SetTotalMass(float totalMass)
 	m_totalMass = totalMass;
 }
 
-void CarPhysics::SetParameters(
-	float frontAxisShift,
-	float rearAxisShift)
+void CarPhysics::SetTraction(float traction)
+{
+	m_traction = traction;
+}
+
+void CarPhysics::SetAxesDistances(float frontAxisShift, float rearAxisShift)
 {
 	m_frontAxisShift = frontAxisShift;
 	m_rearAxisShift = rearAxisShift;
@@ -63,9 +67,7 @@ void CarPhysics::Update(float seconds)
 	debugLog.push_back(std::string("m_velocityLong = ") + StringUtils::ToString(m_velocityLong));
 	debugLog.push_back(std::string("m_velocityLat = ") + StringUtils::ToString(m_velocityLat));
 
-	float sideSpeed = 35.0f;
-
-	m_velocityLat = MathUtils::LinearDamp(m_velocityLat, 0.0f, sideSpeed * seconds);
+	m_velocityLat = MathUtils::LinearDamp(m_velocityLat, 0.0f, m_traction * seconds);
 
 	float engineResist = 1.0f;
 	m_velocityLong = MathUtils::LinearDamp(m_velocityLong, 0.0f, engineResist * seconds);
