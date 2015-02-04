@@ -108,11 +108,6 @@ void CarPhysics::Update(float seconds)
 		m_position.z = -20;
 }
 
-void CarPhysics::Draw()
-{
-
-}
-
 void CarPhysics::PushAccelerationPedal(float value)
 {
 	m_accPedal = value;

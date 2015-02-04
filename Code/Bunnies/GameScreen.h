@@ -17,7 +17,7 @@ class GameController;
 class PausePanel;
 class Label;
 class Shader;
-class CarPhysics;
+class CarController;
 
 class GameScreen : public IScreen
 {
@@ -84,7 +84,7 @@ private:
 
 	GameController *m_gameController;
 
-	CarPhysics* m_carPhysics;
+	CarController* m_carController;
 
 	bool m_isPaused;
 

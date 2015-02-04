@@ -6,6 +6,7 @@
 #include "Environment.h"
 #include "GameProps.h"
 //#include "ManCam.h"
+#include "CarPhysics.h"
 #include "Street.h"
 #include "GameController.h"
 #include "DrawingRoutines.h"
@@ -18,7 +19,7 @@
 #include "Label.h"
 #include <Audio/SoundManager.h>
 #include "HUD.h"
-#include "CarPhysics.h"
+#include "CarController.h"
 #include "VectorGraphics.h"
 
 #include <Math/MathUtils.h>
@@ -79,15 +80,6 @@ GameScreen *GameScreen::GetInstance()
 sm::Matrix view;
 sm::Matrix proj;
 
-enum BreakPedalFunction
-{
-	BreakPedalFunction_None,
-	BreakPedalFunction_Break,
-	BreakPedalFunction_Reverse
-};
-
-BreakPedalFunction breakPedalFunction;
-
 bool GameScreen::Initialize()
 {
 	proj = sm::Matrix::Ortho2DMatrix(-20, 20, -20, 20);
@@ -142,11 +134,14 @@ bool GameScreen::Initialize()
 	m_carSize.Set(2, 4);
 	m_rect1Angle = 0.0f;
 
-	m_carPhysics = new CarPhysics();
-	m_carPhysics->SetEngineForce(8.0f * 1000.0f);
-	m_carPhysics->SetTotalMass(1000.0f);
-	m_carPhysics->SetAxesDistances(-1.8f, 1.8f);
-	m_carPhysics->SetTraction(15.0f);
+	m_carController = new CarController();
+	m_carController->Initialize();
+	m_carController->SetParameters(
+		8.0f * 1000.0f,
+		-1.8f,
+		1.8f,
+		1000.0f,
+		15.0f);
 
 	FontRenderer* font = InterfaceProvider::GetFontRenderer("digital_bold_24");
 
@@ -210,7 +205,7 @@ void GameScreen::Draw(float time, float seconds)
 		viewMatrix
 		);
 
-	sm::Matrix carTransform = m_carPhysics->GetTransform();
+	sm::Matrix carTransform = m_carController->GetTransform();
 
 	VectorGraphics::Begin();
 
@@ -224,20 +219,24 @@ void GameScreen::Draw(float time, float seconds)
 		sm::Vec3(0, 0, 100.0f));
 	//
 
+
+
 	sm::Vec3 carPosition = carTransform * sm::Vec3(0, 0, 0);
 
+	CarPhysics* carPhysics = m_carController->m_carPhysics;
+
 	//VectorGraphics::DrawSegment(m_carPhysics->m_position, m_carPhysics->m_position + m_carPhysics->m_Fe, sm::Vec3(1, 0, 0));
-	VectorGraphics::DrawSegment(carPosition, carPosition + m_carPhysics->m_velocity, sm::Vec3(0, 1, 0));
+	VectorGraphics::DrawSegment(carPosition, carPosition + carPhysics->m_velocity, sm::Vec3(0, 1, 0));
 
-	sm::Vec3 bodyDirection = m_carPhysics->GetBodyDirection();
+	sm::Vec3 bodyDirection = carPhysics->GetBodyDirection();
 
-	VectorGraphics::DrawSegment(carPosition, carPosition + bodyDirection * m_carPhysics->m_velocityLong, sm::Vec3(0, 1, 1));
-	VectorGraphics::DrawSegment(carPosition, carPosition + sm::Vec3(bodyDirection.z, 0, -bodyDirection.x) * m_carPhysics->m_velocityLat, sm::Vec3(0, 1, 1));
+	VectorGraphics::DrawSegment(carPosition, carPosition + bodyDirection * carPhysics->m_velocityLong, sm::Vec3(0, 1, 1));
+	VectorGraphics::DrawSegment(carPosition, carPosition + sm::Vec3(bodyDirection.z, 0, -bodyDirection.x) * carPhysics->m_velocityLat, sm::Vec3(0, 1, 1));
 
 	sm::Matrix frontAxisTransform =
 		carTransform *
-		sm::Matrix::TranslateMatrix(0, 0, m_carPhysics->m_frontAxisShift) *
-		sm::Matrix::CreateLookAt2(m_carPhysics->GetFrontWheelsLocalDirection().GetReversed(), sm::Vec3(0, 1, 0));
+		sm::Matrix::TranslateMatrix(0, 0, carPhysics->m_frontAxisShift) *
+		sm::Matrix::CreateLookAt2(carPhysics->GetFrontWheelsLocalDirection().GetReversed(), sm::Vec3(0, 1, 0));
 
 	//axes
 	VectorGraphics::DrawSegment(
@@ -245,14 +244,14 @@ void GameScreen::Draw(float time, float seconds)
 		frontAxisTransform * sm::Vec3( 10.0f, 0, 0));
 
 	VectorGraphics::DrawSegment(
-		carTransform * sm::Vec3(-10.0f, 0, m_carPhysics->m_rearAxisShift),
-		carTransform * sm::Vec3(10.0f, 0, m_carPhysics->m_rearAxisShift));
+		carTransform * sm::Vec3(-10.0f, 0, carPhysics->m_rearAxisShift),
+		carTransform * sm::Vec3(10.0f, 0, carPhysics->m_rearAxisShift));
 	//
 
 	// turn radius
 	VectorGraphics::DrawSegment(
-		carTransform * sm::Vec3(m_carPhysics->CalculateTurnRadius(), 0, m_carPhysics->m_rearAxisShift + 0.2f),
-		carTransform * sm::Vec3(m_carPhysics->CalculateTurnRadius(), 0, m_carPhysics->m_rearAxisShift - 0.2f));
+		carTransform * sm::Vec3(carPhysics->CalculateTurnRadius(), 0, carPhysics->m_rearAxisShift + 0.2f),
+		carTransform * sm::Vec3(carPhysics->CalculateTurnRadius(), 0, carPhysics->m_rearAxisShift - 0.2f));
 	//
 
 	/*
@@ -281,83 +280,33 @@ void GameScreen::SetPenalty(float value)
 	m_penaltyLabel->SetMarginTop(50);
 }
 
-float steerAngleLimit = MathUtils::PI / 7.0f;
-float steerSpeed = 1.0f;
-float steerBackSpeed = 1.0f;
-
 void GameScreen::Update(float time, float seconds)
 {
-	if (Input2::GetKeyDown(KeyCode::KeyCode_Down))
-	{
-		if (m_carPhysics->GetForwardSpeed() > 0.0f)
-			breakPedalFunction = BreakPedalFunction_Break;
-		else
-			breakPedalFunction = BreakPedalFunction_Reverse;
-	}
-
-	/*if (Input2::GetKey(KeyCode::KeyCode_Left))
-		m_rect1Pos.x -= 0.1f;
-	if (Input2::GetKey(KeyCode::KeyCode_Right))
-		m_rect1Pos.x += 0.1f;*/
-	if (Input2::GetKey(KeyCode::KeyCode_Up))
-		m_carPhysics->PushAccelerationPedal(1.0f);
-	else if (Input2::GetKey(KeyCode::KeyCode_Down))
-	{
-		switch (breakPedalFunction)
-		{
-		case BreakPedalFunction_Break:
-			if (m_carPhysics->GetForwardSpeed() > 0.0f)
-				m_carPhysics->PushAccelerationPedal(-1.5f);
-			else
-			{
-				breakPedalFunction = BreakPedalFunction_None;
-				m_carPhysics->PushAccelerationPedal(0.0f);
-			}
-			break;
-
-		case BreakPedalFunction_Reverse:
-			m_carPhysics->PushAccelerationPedal(-0.5f);
-			break;
-
-		case BreakPedalFunction_None:
-			break;
-		}
-	}
-	else
-		m_carPhysics->PushAccelerationPedal(0.0f);
-
-	float steerAngle = m_carPhysics->m_steerAngle;
-
-	//wheelAngle = 0.0f;
+	m_carController->Break(Input2::GetKey(KeyCode::KeyCode_Down));
+	m_carController->Accelerate(Input2::GetKey(KeyCode::KeyCode_Up));
 
 	if (Input2::GetKey(KeyCode::KeyCode_Left))
 	{
-		steerAngle -= steerSpeed * seconds;
+		m_carController->Steer(CarController::Steer_Left);
 	}
 	else if (Input2::GetKey(KeyCode::KeyCode_Right))
 	{
-		steerAngle += steerSpeed * seconds;
+		m_carController->Steer(CarController::Steer_Right);
 	}
 	else
 	{
-		steerAngle = MathUtils::LinearDamp(steerAngle, 0.0, steerBackSpeed * seconds);
+		m_carController->Steer(CarController::Steer_None);
 	}
 
-	steerAngle = MathUtils::Clamp(steerAngle, -steerAngleLimit, steerAngleLimit);
-
-	//steerAngle = MathUtils::Clamp(steerAngle, -MathUtils::PI4, MathUtils::PI4);
-
-	m_carPhysics->SetSteerAngle(steerAngle);
-
-	m_carPhysics->Update(seconds);
+	m_carController->Update(seconds);
 
 	char text[1024];
-	sprintf(text, "Speed = %.2f km/h", m_carPhysics->m_speed * (3600.0f / 1000.0f));
+	sprintf(text, "Speed = %.2f km/h", m_carController->m_carPhysics->m_speed * (3600.0f / 1000.0f));
 	debugLog.push_back(text);
-	sprintf(text, "Speed = %.2f m/s", m_carPhysics->m_speed);
+	sprintf(text, "Speed = %.2f m/s", m_carController->m_carPhysics->m_speed);
 	debugLog.push_back(text);
 
-	debugLog.push_back(std::string("turn radius = " + StringUtils::ToString(m_carPhysics->CalculateTurnRadius())));
+	debugLog.push_back(std::string("turn radius = " + StringUtils::ToString(m_carController->m_carPhysics->CalculateTurnRadius())));
 }
 
 void GameScreen::Reset()

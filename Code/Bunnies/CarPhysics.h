@@ -18,7 +18,6 @@ public:
 	void SetTraction(float traction);
 
 	void Update(float seconds);
-	void Draw();
 
 	// 0.0 means release pedal, 1.0 means pedal to the metal
 	void PushAccelerationPedal(float value);
@@ -30,6 +29,8 @@ public:
 	float GetSpeed() const;
 	float GetForwardSpeed() const;
 	float GetSideSpeed() const;
+
+	sm::Matrix GetTransform();
 	
 private:
 	static const float DragConstant;
@@ -57,8 +58,6 @@ private:
 	float m_speed;
 
 	sm::Vec3 m_position;
-
-	sm::Matrix GetTransform();
 	sm::Vec3 GetFrontWheelsLocalDirection();
 
 	float CalculateTurnRadius();
